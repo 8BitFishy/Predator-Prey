@@ -1,4 +1,4 @@
-import bpy
+#import bpy
 import random
 from itertools import count
 
@@ -45,11 +45,11 @@ def freeroam(walkspeed):
     randdir = random.randint(1, randmax)
     if randdir <= randmax / 8:
         movement[0] += walkspeed
-        # print("X+")
+
     elif randdir > randmax / 8 and randdir <= 2 * (randmax / 8):
         movement[0] += walkspeed
         movement[1] += walkspeed
-        # print("X-")
+
     elif randdir > 2 * (randmax / 8) and randdir <= 3 * (randmax / 8):
         movement[0] += walkspeed
         movement[1] -= walkspeed
@@ -70,7 +70,6 @@ def freeroam(walkspeed):
 
     else:
         movement[1] -= walkspeed
-        # print("Y-")
 
     return movement
 
@@ -78,10 +77,9 @@ def freeroam(walkspeed):
 def boundarycheck(predatorspotted, position, movement, groundsize):
     stuck = 0
     overflow = 0
-    # print("\n-------Start boundary check-------")
-    # print("Starting Position: {}".format(position))
-    # print("Attempting movement: {}\n".format(movement))
-    pathfound = 0
+    print("\n-------Start boundary check-------")
+    print("Starting Position: {}".format(position))
+    print("Attempting movement: {}\n".format(movement))
 
     while True:
 
@@ -92,38 +90,38 @@ def boundarycheck(predatorspotted, position, movement, groundsize):
             else:
                 overflow = position[0] + movement[0] + overflow - groundsize / 2
 
-            # print("Predator spotted at: {}".format(predatorspotted))
+            print("Predator spotted at: {}".format(predatorspotted))
 
             pathfound = 1
 
             while pathfound != 0:
-                # print("overflow x = {}".format(overflow))
+                print("overflow x = {}".format(overflow))
                 randoverflow = random.randint(1, randmax)
 
                 if predatorspotted[0] == 0:
                     movement[0] = - movement[0]
-                    # print("state 3: {}".format(movement))
+                    print("state 3: {}".format(movement))
                     pathfound = 0
 
                 elif randoverflow <= randmax / 3 and predatorspotted[1] <= 0:
                     movement[0] = movement[0] - overflow
                     movement[1] = movement[1] - overflow
-                    # print("state 1: {}".format(movement))
+                    print("state 1: {}".format(movement))
                     pathfound = 0
 
                 elif randoverflow > randmax / 3 and randoverflow < 2 * randmax / 3 and predatorspotted[1] >= 0:
                     movement[0] = movement[0] - overflow
                     movement[1] = movement[1] + overflow
-                    # print("state 2: {}".format(movement))
+                    print("state 2: {}".format(movement))
                     pathfound = 0
 
                 elif predatorspotted[0] != 0 and predatorspotted[1] != 0:
-                    # print("CORNERED1")
+                    print("CORNERED1")
                     movement[0] = movement[0] - overflow
                     pathfound = 0
 
             overflow = 0
-            # print("movementupdate = {}\n".format(movement))
+            print("movementupdate = {}\n".format(movement))
 
         if abs(position[1] + movement[1]) > groundsize / 2:
 
@@ -132,47 +130,41 @@ def boundarycheck(predatorspotted, position, movement, groundsize):
             else:
                 overflow = position[1] + movement[1] + overflow - groundsize / 2
 
-            # print("Predator spotted at: {}".format(predatorspotted))
-            pathfound = 1
+            print("Predator spotted at: {}".format(predatorspotted))
 
-            while pathfound != 0:
-                # print("overflow y = {}".format(overflow))
-                randoverflow = random.randint(1, randmax)
+            print("overflow y = {}".format(overflow))
+            randoverflow = random.randint(1, randmax)
 
-                if predatorspotted[1] == 0:
-                    movement[1] = - movement[1]
-                    # print("state 6: {}".format(movement))
-                    pathfound = 0
+            if predatorspotted[1] == 0:
+                movement[1] = - movement[1]
+                print("state 6: {}".format(movement))
 
-                elif randoverflow <= randmax / 3 and predatorspotted[0] <= 0:
-                    movement[1] = movement[1] - overflow
-                    movement[0] = movement[0] - overflow
-                    # print("state 4: {}".format(movement))
-                    pathfound = 0
+            elif randoverflow <= randmax / 3 and predatorspotted[0] <= 0:
+                movement[1] = movement[1] - overflow
+                movement[0] = movement[0] - overflow
+                print("state 4: {}".format(movement))
 
-                elif randoverflow > randmax / 3 and randoverflow < 2 * randmax / 3 and predatorspotted[0] >= 0:
-                    movement[1] = movement[1] - overflow
-                    movement[0] = movement[0] + overflow
-                    # print("state 5: {}".format(movement))
-                    pathfound = 0
+            elif randoverflow > randmax / 3 and randoverflow < 2 * randmax / 3 and predatorspotted[0] >= 0:
+                movement[1] = movement[1] - overflow
+                movement[0] = movement[0] + overflow
+                print("state 5: {}".format(movement))
 
 
 
-                elif predatorspotted[0] != 0 and predatorspotted[1] != 0:
-                    # print("CORNERED")
-                    movement[1] = movement[1] - overflow
-                    pathfound = 0
+            elif predatorspotted[0] != 0 and predatorspotted[1] != 0:
+                print("CORNERED")
+                movement[1] = movement[1] - overflow
 
             overflow = 0
-            # print("movementupdate = {}\n".format(movement))
+            print("movementupdate = {}\n".format(movement))
 
 
 
         else:
-            # print("no overflow")
+            print("no overflow")
             overflow = 0
 
-        # print("Position: {}, Movement: {}".format(position, movement))
+        print("Position: {}, Movement: {}".format(position, movement))
 
         if overflow == 0 and abs(movement[0] + position[0]) <= groundsize / 2 and abs(
                 movement[1] + position[1]) <= groundsize / 2:
@@ -184,7 +176,7 @@ def boundarycheck(predatorspotted, position, movement, groundsize):
 
         else:
             stuck += 1
-            # print("Stuck! = : {}".format(stuck))
+            print("Stuck! = : {}".format(stuck))
 
     return movement
 
@@ -224,7 +216,7 @@ def checkforpredators(position, predatorlist):
         return moveaway
 
 
-def runawaaay(position, walkspeed, predatorspotted):
+def runawaaay(walkspeed, predatorspotted):
     movement = [0, 0]
 
     for i in range(2):
@@ -236,16 +228,17 @@ predatorlist = []
 preylist = []
 
 if __name__ == '__main__':
-    # print("\n\n-----------------------RUN BEGIN------------------------\n")
+    print("\n\n-----------------------RUN BEGIN------------------------\n")
 
     for i in range(predatorcount):
         predinstance = Predators()
-        # print("Predator {} starting position: {}".format(predinstance.id, predinstance.position))
+        print("Predator {} starting position: {}".format(predinstance.id, predinstance.position))
+
         predatorlist.append(predinstance)
 
     for i in range(preycount):
         preyinstance = Prey()
-        # print("Prey {} starting position: {}".format(preyinstance.id, preyinstance.position))
+        print("Prey {} starting position: {}".format(preyinstance.id, preyinstance.position))
         preylist.append(preyinstance)
 
     t = 0
@@ -256,16 +249,16 @@ if __name__ == '__main__':
 
         for predinstance in predatorlist:
             predatorspotted = [0, 0]
-            # print("\n\nmoving predator {}".format(predinstance.id))
+            print("\n\nmoving predator {}".format(predinstance.id))
             movement = freeroam(predinstance.walkspeed)
-            # print("movement = {}".format(movement))
-            # print("previous position: {}".format(predinstance.position))
+            print("movement = {}".format(movement))
+            print("previous position: {}".format(predinstance.position))
             movement = boundarycheck(predatorspotted, predinstance.position, movement, groundsize)
             predinstance.position = updateposition(predinstance.position, movement)
-            # print("Predator {} new position: {}".format(predinstance.id, predinstance.position))
+            print("Predator {} new position: {}".format(predinstance.id, predinstance.position))
 
         for preyinstance in preylist:
-            # print("\nmoving prey {}".format(preyinstance.id))
+            print("\nmoving prey {}".format(preyinstance.id))
 
             predatorspotted = checkforpredators(preyinstance.position, predatorlist)
 
@@ -274,18 +267,18 @@ if __name__ == '__main__':
                 preyinstance.state = 1
 
             else:
-                movement = runawaaay(preyinstance.position, preyinstance.walkspeed, predatorspotted)
+                movement = runawaaay(preyinstance.walkspeed, predatorspotted)
                 preyinstance.state = 0
 
             movement = boundarycheck(predatorspotted, preyinstance.position, movement, groundsize)
 
-            # print("previous position: {}".format(preyinstance.position))
+            print("previous position: {}".format(preyinstance.position))
 
             preyinstance.position = updateposition(preyinstance.position, movement)
 
-            # print("New position: {}".format(preyinstance.position))
+            print("New position: {}".format(preyinstance.position))
 
-        # print("\n\nloop end positions:\n")
+        print("\n\nloop end positions:\n")
         for predinstance in predatorlist:
             predatorpositions.append(predinstance.position[:])
         for preyinstance in preylist:
