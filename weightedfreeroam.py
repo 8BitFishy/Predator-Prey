@@ -5,8 +5,9 @@ def weightedfreeroam(last_movement, walkspeed):
     weight = 9
     weighted_random = [0, 0]
     movement = [0, 0]
-    xweight = last_movement[0] * weight
-    yweight = last_movement[1] * weight
+    xweight = int(last_movement[0]) * weight
+    yweight = int(last_movement[1]) * weight
+
     weighted_random[0] = ['1'] * (offset+xweight) + ['-1'] * (offset-xweight)  + ['0'] * offset
 
     weighted_random[1] = ['+1'] * (offset+yweight) + ['-1'] * (offset-yweight) + ['0'] * offset

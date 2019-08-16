@@ -31,10 +31,10 @@ class Prey:  # Python3 defaults to using object in classes  so you don't need to
 
 
 
-predatorsize = 2
-predatorstart = [10, -10, predatorsize / 2]
+predatorsize = 1
+predatorstart = [10, -10, predatorsize/2]
 preysize = 0.5
-preystart = [1, 1, preysize / 2]
+preystart = [1, 1, preysize/2]
 duration = 100
 groundsize = 50
 predatorcount = 1
