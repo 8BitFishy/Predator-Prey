@@ -4,7 +4,22 @@ from itertools import count
 import weightedfreeroam
 import checkforpredators
 import boundarycheck
+import updateposition
+import runawaaay
 
+
+class Actors:
+
+  _ids = count(0)
+
+  def __init__(self):
+    self.id = next(self._ids)
+    self.role = role
+    self.startposition = startposition
+    self.walkspeed = walkspeed
+    self.viewdistance = viewdistance
+    self.lastmovement = [0, 0]
+    
 
 class Predators:  # Python3 defaults to using object in classes  so you don't need to pass it in as a param in the class
 
@@ -25,7 +40,6 @@ class Prey:  # Python3 defaults to using object in classes  so you don't need to
         self.id = next(self._ids)
         self.position = preystart
         self.walkspeed = 2
-        self.state = 1
         self.viewdistance = 10
         self.last_movement = [0, 0]
 
@@ -37,8 +51,8 @@ preysize = 0.5
 preystart = [1, 1, preysize/2]
 duration = 100
 groundsize = 50
-predatorcount = 1
-preycount = 1
+predatorcount = 3
+preycount = 2
 randmax = 1000
 
 predatorpositions = []
@@ -49,25 +63,32 @@ preylist = []
 
 
 
-def updateposition(position, movement):
-    position[0] = position[0] + movement[0]
-    position[1] = position[1] + movement[1]
-    return position
-
-
-def runawaaay(position, walkspeed, predatorspotted):
-    movement = [0, 0]
-    for i in range(2):
-        movement[i] = predatorspotted[i] * walkspeed
-    return movement
-
-
 if __name__ == '__main__':
     # print("\n\n-----------------------RUN BEGIN------------------------\n")
 
     t = 0
 
     frame = 0
+
+    for i in range (predatorcount+preycount):
+    
+      if i<predatorcount:
+        role = 'predator'
+        startposition = [2, 2]
+        walkspeed = 2
+        viewdistance = 4
+      else:
+        role = 'prey'
+        startposition = [8, 8]
+        walkspeed = 10
+        viewdistance = 5
+  
+      Actor = Actors()
+      print("{} is {}, start position {}, walkspeed {}, viewdistance {}".format(Actor.id, Actor.role, Actor.startposition, Actor.walkspeed, Actor.viewdistance))
+
+
+
+
 
     #Initialise Predators
     for i in range(predatorcount):
@@ -105,7 +126,7 @@ if __name__ == '__main__':
             # print("previous position: {}".format(predinstance.position))
             movement = boundarycheck.boundarycheck(predatorspotted, predinstance.position, movement, groundsize, randmax)
             predinstance.last_movement = movement
-            predinstance.position = updateposition(predinstance.position, movement)
+            predinstance.position = updateposition.updateposition(predinstance.position, movement)
             # print("Predator {} new position: {}".format(predinstance.id, predinstance.position))
 
         for preyinstance in preylist:
@@ -115,17 +136,15 @@ if __name__ == '__main__':
 
             if predatorspotted == [0, 0]:
                 movement = weightedfreeroam.weightedfreeroam(preyinstance.last_movement, preyinstance.walkspeed)
-                preyinstance.state = 1
 
             else:
-                movement = runawaaay(preyinstance.position, preyinstance.walkspeed, predatorspotted)
-                preyinstance.state = 0
+                movement = runawaaay.runawaaay(preyinstance.position, preyinstance.walkspeed, predatorspotted)
 
             movement = boundarycheck.boundarycheck(predatorspotted, preyinstance.position, movement, groundsize, randmax)
 
             # print("previous position: {}".format(preyinstance.position))
             preyinstance.last_movement = movement
-            preyinstance.position = updateposition(preyinstance.position, movement)
+            preyinstance.position = updateposition.updateposition(preyinstance.position, movement)
 
             # print("New position: {}".format(preyinstance.position))
 
