@@ -12,16 +12,16 @@ def weightedfreeroam(last_movement, walkspeed):
 
     weighted_random[1] = ['+1'] * (offset+yweight) + ['-1'] * (offset-yweight) + ['0'] * offset
 
-    #print("last movement - {}".format(last_movement))
-    #print("Stats: X+: {}, X-: {}, X0: {}".format(offset+xweight, offset-xweight, offset))
-    #print("Stats: Y+: {}, Y-: {}, Y0: {}".format(offset+yweight, offset-yweight, offset))
+    ##print("last movement - {}".format(last_movement))
+    ##print("Stats: X+: {}, X-: {}, X0: {}".format(offset+xweight, offset-xweight, offset))
+    ##print("Stats: Y+: {}, Y-: {}, Y0: {}".format(offset+yweight, offset-yweight, offset))
 
 
     for i in range(0, 2):
         movement[i] = int(random.choice(weighted_random[i]))
         movement[i] = movement[i] * walkspeed
 
-    print(movement)
+    #print(movement)
     return(movement)
 
 '''
@@ -29,6 +29,6 @@ if __name__ == '__main__':
     x = 0
     while x<10:
         movement = weightedfreeroam(movement, 10)
-        print(movement)
+        #print(movement)
         x+=1
 '''
