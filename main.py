@@ -63,13 +63,24 @@ predatorlist = []
 preylist = []
 actorlist = []
 
+
+
+#_________________________Start of main simulation___________________________
+
+
+
+
 if __name__ == '__main__':
+
     os.system('cls' if os.name == 'nt' else 'clear')
     print("\n\n-----------------------RUN BEGIN------------------------\n")
 
     t = 0
 
     frame = 0
+
+
+
 
     # initialise Actors and assign characteristics
     for i in range(predatorcount + preycount):
@@ -94,110 +105,39 @@ if __name__ == '__main__':
 
     print("\n\nActors generated\n\n")
 
-
-#TODO delete these two functions
-    # Initialise Predators
-    for i in range(predatorcount):
-        predinstance = Predators()
-        # print("Predator {} starting position: {}".format(predinstance.id, predinstance.position))
-        predatorlist.append(predinstance)
-
-    # Initialise Prey
-    for i in range(preycount):
-        preyinstance = Prey()
-        # ##print("Prey {} starting position: {}".format(preyinstance.id, preyinstance.position))
-        preylist.append(preyinstance)
-
-'''
-    #Create blank files for predator vectors
-    for predinstance in predatorlist:
-        predatorsoutput = ('pred{}vectors.txt'.format(predinstance.id))
-        with open(predatorsoutput, 'w') as file_object:
-            file_object.write("")
-
-    #Create blank files for prey vectors
-    for preyinstance in preylist:
-        preyoutput = ('prey{}vectors.txt'.format(preyinstance.id))
-        with open(preyoutput, 'w') as file_object:
-            file_object.write("")
-'''
-
-#TODO delete this function and move to populate
-outputmanager.createoutputfiles(actorlist)
+    outputmanager.createoutputfiles(actorlist)
 
 
 
-while t < duration:
+    while t < duration:
 
-    for Actor in actorlist:
-        predatorspotted = [0, 0]
+        for Actor in actorlist:
+            if Actor.id == 0:
+                print('\nRound starting position{}\n'.format(Actor.position))
 
-        movement = weightedfreeroam.weightedfreeroam(Actor.lastmovement, Actor.walkspeed)
-        movement = boundarycheck.boundarycheck(predatorspotted, Actor.position, movement, groundsize, randmax)
-        Actor.lastmovement = movement
-        Actor.position = updateposition.updateposition(Actor.position, movement)
+            predatorspotted = checkforpredators.checkforpredators(Actor.position, Actor.viewdistance, actorlist)
 
+            if predatorspotted == [0, 0]:
+                movement = weightedfreeroam.weightedfreeroam(Actor.lastmovement, Actor.walkspeed)
 
-    for predinstance in predatorlist:
-        predatorspotted = [0, 0]
-        movement = weightedfreeroam.weightedfreeroam(predinstance.last_movement, predinstance.walkspeed)
-        movement = boundarycheck.boundarycheck(predatorspotted, predinstance.position, movement, groundsize, randmax)
-        predinstance.last_movement = movement
-        predinstance.position = updateposition.updateposition(predinstance.position, movement)
-        # ##print("Predator {} new position: {}".format(predinstance.id, predinstance.position))
+            else:
+                movement = runawaaay.runawaaay(Actor.position, Actor.walkspeed, predatorspotted)
 
+            movement = boundarycheck.boundarycheck(predatorspotted, Actor.position, movement, groundsize, randmax)
+            Actor.lastmovement = movement
+            Actor.position = updateposition.updateposition(Actor.position, movement)
 
 
-
-    for preyinstance in preylist:
-        # ##print("\nmoving prey {}".format(preyinstance.id))
-
-        predatorspotted = checkforpredators.checkforpredators(preyinstance.position, preyinstance.viewdistance,
-                                                              predatorlist)
-
-        if predatorspotted == [0, 0]:
-            movement = weightedfreeroam.weightedfreeroam(preyinstance.last_movement, preyinstance.walkspeed)
-
-        else:
-            movement = runawaaay.runawaaay(preyinstance.position, preyinstance.walkspeed, predatorspotted)
-
-        movement = boundarycheck.boundarycheck(predatorspotted, preyinstance.position, movement, groundsize, randmax)
-
-        # ##print("previous position: {}".format(preyinstance.position))
-        preyinstance.last_movement = movement
-        preyinstance.position = updateposition.updateposition(preyinstance.position, movement)
-
-        # ##print("New position: {}".format(preyinstance.position))
+            #if Actor.id == 0:
+             #   print('\nRound ending position{}\n'.format(Actor.position))
 
 
 
 
 
+            #if Actor.id == 0:
+               # print("{} position - \n\n{}\n\n".format(Actor.id, Actor.position))
 
 
-    # ##print("\n\nloop end positions:\n")
-    '''
-    for predinstance in predatorlist:
-        predatorsoutput = ('pred{}vectors.txt'.format(predinstance.id))
-        with open(predatorsoutput, 'a') as file_object:
-            for e in range(0, 3):
-                file_object.write(str(predinstance.position[e]))
-                if e != 2:
-                    file_object.write(",")
-            file_object.write("\n")
-
-    for preyinstance in preylist:
-        preyoutput = ('prey{}vectors.txt'.format(preyinstance.id))
-        with open(preyoutput, 'a') as file_object:
-            for e in range(0, 3):
-                file_object.write(str(preyinstance.position[e]))
-                if e != 2:
-                    file_object.write(",")
-            file_object.write("\n")
-            '''
-    for Actor in actorlist:
-        Actor.position.append(int(Actor.size)/2)
-        if Actor.id == 0:
-            print("{} position - \n\n{}\n\n".format(Actor.id, Actor.position))
-    outputmanager.populateoutputfiles(actorlist)
-    t += 1
+        outputmanager.populateoutputfiles(actorlist)
+        t += 1

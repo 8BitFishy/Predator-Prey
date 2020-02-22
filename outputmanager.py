@@ -49,12 +49,24 @@ def populateoutputfiles(actorlist):
 
         actoroutput = ('{}\\Actor{}{}vectors.txt'.format(newpath, Actor.role, actorcount))
 
+        Actor.position.append(Actor.size/2)
+
+        
         with open(actoroutput, 'a')as file_object:
+            if Actor.id == 0:
+                print('\nActor {} position - {}'.format(Actor.id, Actor.position))
+
             for e in range(0, 3):
+                if Actor.id == 0:
+                    print('Vector: {} position {}'.format(e, Actor.position[e]))
                 file_object.write(str(Actor.position[e]))
                 if e!=2:
                     file_object.write(",")
             file_object.write("\n")
+
+            del Actor.position[2]
+
+
 
 
 

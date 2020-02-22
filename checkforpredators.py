@@ -21,5 +21,6 @@ def checkforpredators(position, viewdistance, predatorlist):
                     moveaway[1] = -1 * 0.5 * (viewdistance - ycheck)
 
         #print("preylocation: {}, predatorlocation: {}, viewdistance: {}, moveaway: {}".format(position,predinstance.position,viewdistance,moveaway))
+
         return moveaway
 
