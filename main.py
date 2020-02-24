@@ -23,36 +23,16 @@ class Actors:
         self.lastmovement = [0, 0]
 
 
-#TODO delete these two classes
-class Predators:  # Python3 defaults to using object in classes  so you don't need to pass it in as a param in the class
-
-    _ids = count(0)
-
-    def __init__(self):
-        self.id = next(self._ids)
-        self.position = predatorstart
-        self.walkspeed = 5
-        self.last_movement = [0, 0]
-class Prey:  # Python3 defaults to using object in classes  so you don't need to pass it in as a param in the class
-
-    _ids = count(0)
-
-    def __init__(self):
-        self.id = next(self._ids)
-        self.position = preystart
-        self.walkspeed = 2
-        self.viewdistance = 10
-        self.last_movement = [0, 0]
 
 
 predatorsize = 1
 predatorstart = [10, -10, predatorsize / 2]
 preysize = 0.5
 preystart = [1, 1, preysize / 2]
-duration = 100
+duration = 10
 groundsize = 50
-predatorcount = 3
-preycount = 2
+predatorcount = 5
+preycount =3
 randmax = 1000
 
 predatorpositions = []
@@ -77,7 +57,7 @@ if __name__ == '__main__':
 
     t = 0
 
-    frame = 0
+
 
 
 
@@ -88,41 +68,45 @@ if __name__ == '__main__':
         if i < predatorcount:
             role = 'predator'
             size = predatorsize
-            startposition = [groundsize/2-i, groundsize/2+i]
+            startposition = [int(groundsize/2-i), int(groundsize/2+i)]
             walkspeed = 2
             viewdistance = 4
         else:
             role = 'prey'
             size = preysize
-            startposition = [groundsize/2+i, groundsize/2 - i]
-            walkspeed = 10
-            viewdistance = 5
+            startposition = [int(groundsize/2+i), int(groundsize/2 - i)]
+            walkspeed = 4
+            viewdistance = 4
 
         # Create actors and print out list
         Actor = Actors()
-        print("{} is {}, start position {}, walkspeed {}, viewdistance {}, size = {}".format(Actor.id, Actor.role, Actor.position, Actor.walkspeed, Actor.viewdistance, Actor.size))
+        #print("{} is {}, start position {}, walkspeed {}, viewdistance {}, size = {}".format(Actor.id, Actor.role, Actor.position, Actor.walkspeed, Actor.viewdistance, Actor.size))
         actorlist.append(Actor)
 
-    print("\n\nActors generated\n\n")
+    #print("\n\nActors generated\n\n")
 
     outputmanager.createoutputfiles(actorlist)
 
 
 
     while t < duration:
-
+        print("------------Round {}------------".format(t))
         for Actor in actorlist:
-            if Actor.id == 0:
-                print('\nRound starting position{}\n'.format(Actor.position))
+            #if Actor.id == 0:
+                #print('\nRound starting position{}\n'.format(Actor.position))
 
-            predatorspotted = checkforpredators.checkforpredators(Actor.position, Actor.viewdistance, actorlist)
+            predatorspotted = checkforpredators.checkforpredators(Actor.position, Actor.viewdistance, actorlist, Actor.id, predatorcount)
 
             if predatorspotted == [0, 0]:
+                print("Actor {} safe\n".format(Actor.id))
+
                 movement = weightedfreeroam.weightedfreeroam(Actor.lastmovement, Actor.walkspeed)
 
             else:
-                movement = runawaaay.runawaaay(Actor.position, Actor.walkspeed, predatorspotted)
+                print("Actor {} predator spotted at {}\n".format(Actor.id, predatorspotted))
 
+                movement = runawaaay.runawaaay(Actor.walkspeed, predatorspotted)
+                print("Actor {} running from predator at vector {} with movement {}".format(Actor.id, predatorspotted, movement))
             movement = boundarycheck.boundarycheck(predatorspotted, Actor.position, movement, groundsize, randmax)
             Actor.lastmovement = movement
             Actor.position = updateposition.updateposition(Actor.position, movement)
@@ -141,3 +125,4 @@ if __name__ == '__main__':
 
         outputmanager.populateoutputfiles(actorlist)
         t += 1
+

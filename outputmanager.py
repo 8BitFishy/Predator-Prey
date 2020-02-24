@@ -53,12 +53,8 @@ def populateoutputfiles(actorlist):
 
         
         with open(actoroutput, 'a')as file_object:
-            if Actor.id == 0:
-                print('\nActor {} position - {}'.format(Actor.id, Actor.position))
 
             for e in range(0, 3):
-                if Actor.id == 0:
-                    print('Vector: {} position {}'.format(e, Actor.position[e]))
                 file_object.write(str(Actor.position[e]))
                 if e!=2:
                     file_object.write(",")
