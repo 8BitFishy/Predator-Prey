@@ -1,0 +1,15 @@
+predatorsize=2
+predatorstartx=10
+predatorstarty=-10
+preysize=0.5
+preystartx=1
+preystarty=1
+duration = 100
+groundsize = 50
+predatorcount = 1
+preycount = 1
+randmax = 1000
+predatorwalkspeed = 2
+preywalkspeed = 3
+predatorviewdistance = 4
+preyviewdistance = 6
