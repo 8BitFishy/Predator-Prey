@@ -5,8 +5,9 @@ import boundarycheck
 import updateposition
 import runawaaay
 import outputmanager
+import clearvectorfiles
+import checkforwinner
 import os
-
 
 class Actors:
     _ids = count(0)
@@ -54,11 +55,10 @@ actorlist = []
 
 #_________________________Start of main simulation___________________________
 
-
-
-
 if __name__ == '__main__':
 
+
+    clearvectorfiles.clearvectorfiles()
     os.system('cls' if os.name == 'nt' else 'clear')
     print("\n\n-----------------------RUN BEGIN------------------------\n")
 
@@ -91,15 +91,13 @@ if __name__ == '__main__':
         actorlist.append(Actor)
 
     #print("\n\nActors generated\n\n")
+    winner = 0
 
 
-
-    while t < duration:
+    while t < duration and winner != 1:
         print("\n------------Round {}------------\n".format(t))
         for Actor in actorlist:
             print(f"\nActor {Actor.id} operating as {Actor.role} starts round at position {Actor.position}")
-            #if Actor.id == 0:
-                #print('\nRound starting position{}\n'.format(Actor.position))
 
             predatorspotted = checkforpredators.checkforpredators(Actor.position, Actor.viewdistance, actorlist, Actor.id, predatorcount)
 
@@ -121,6 +119,10 @@ if __name__ == '__main__':
             Actor.position = updateposition.updateposition(Actor.position, movement)
             print(f"{Actor.role} position after update = {Actor.position}")
             Actor.lastmovement = movement
+            if Actor.role == 'predator':
+                winner = checkforwinner.checkforwinner(Actor.position, actorlist)
+            else:
+                winner = 0
 
             #if Actor.id == 0:
              #   print('\nRound ending position{}\n'.format(Actor.position))
