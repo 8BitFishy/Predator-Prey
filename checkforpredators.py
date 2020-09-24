@@ -1,15 +1,16 @@
-def checkforpredators(position, viewdistance, actorlist, actornumber, predatorcount):
+def checkforpredators(position, viewdistance, actorlist, role):
 
     moveaway = [0, 0]
+
     for Actor in actorlist:
 
-        if (actornumber >= predatorcount):
+        if (role != Actor.role):
             #check for predators in x and y direction
             xcheck = Actor.position[0] - position[0]
             ycheck = Actor.position[1] - position[1]
 
             #if predator is within view distance
-            if abs(xcheck) < viewdistance or abs(ycheck) < viewdistance:
+            if abs(xcheck) < viewdistance and abs(ycheck) < viewdistance:
                 #if predator is in x plane
                 if abs(xcheck) < viewdistance:
                     #if predator is in negative x direction, set movement direction as positive x direction

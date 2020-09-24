@@ -99,7 +99,7 @@ if __name__ == '__main__':
         for Actor in actorlist:
             print(f"\nActor {Actor.id} operating as {Actor.role} starts round at position {Actor.position}")
 
-            predatorspotted = checkforpredators.checkforpredators(Actor.position, Actor.viewdistance, actorlist, Actor.id, predatorcount)
+            predatorspotted = checkforpredators.checkforpredators(Actor.position, Actor.viewdistance, actorlist, Actor.role)
 
             if predatorspotted == [0, 0]:
                 if Actor.role == "prey":
@@ -111,7 +111,7 @@ if __name__ == '__main__':
                 print("Actor {} predator spotted at {}\n".format(Actor.id, predatorspotted))
 
                 movement = runawaaay.runawaaay(Actor.walkspeed, predatorspotted, Actor.viewdistance)
-                print("Actor {} running from predator at vector {} with movement {}".format(Actor.id, predatorspotted, movement))
+                print("\n\n\n---------------------Actor {} running from predator at vector {} with movement {}".format(Actor.id, predatorspotted, movement))
             print(f"{Actor.role} movement before boundary check = {movement}")
             movement = boundarycheck.boundarycheck(predatorspotted, Actor.position, movement, groundsize, randmax)
             print(f"{Actor.role} movement after boundary check = {movement}")
