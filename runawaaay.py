@@ -4,18 +4,10 @@ def runawaaay(walkspeed, predatorspotted, viewdistance):
         if predatorspotted[i] != 0:
 
             print(f"Viewdistance = {viewdistance}, Predatorspotted = {predatorspotted}, Walkspeed = {walkspeed}")
-            #movement[i] = (viewdistance - abs(predatorspotted[i])) * walkspeed
             movement[i] = predatorspotted[i] * walkspeed
-
-            #if predatorspotted[i] < 0:
-                #movement[i] = movement[i] * -1
-
-            #else:
-                #continue
 
         else:
             movement[i] = 0
-    #print ("RUNNNNNNNNNNN\n\n")
 
 
 

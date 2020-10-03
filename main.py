@@ -1,4 +1,3 @@
-from itertools import count
 import weightedfreeroam
 import checkforpredators
 import boundarycheck
@@ -7,19 +6,8 @@ import runawaaay
 import outputmanager
 import clearvectorfiles
 import checkforwinner
+import generate_actors
 import os
-
-class Actors:
-    _ids = count(0)
-
-    def __init__(self):
-        self.id = next(self._ids)
-        self.role = role
-        self.size = size
-        self.position = startposition
-        self.walkspeed = walkspeed
-        self.viewdistance = viewdistance
-        self.lastmovement = [0, 0]
 
 
 parameters = {}
@@ -30,25 +18,12 @@ with open("Parameters.txt") as f:
         name = name.rstrip(" ")
         parameters[name] = value.rstrip('\n')
 
-predatorsize = float(parameters["predatorsize"])
-preysize = float(parameters["preysize"])
 duration = int(parameters["duration"])
 groundsize = float(parameters["groundsize"])
 predatorcount = int(parameters["predatorcount"])
 preycount = int(parameters["preycount"])
 randmax = int(parameters["randmax"])
-predatorwalkspeed = int(parameters["predatorwalkspeed"])
-preywalkspeed = int(parameters["preywalkspeed"])
-predatorviewdistance = int(parameters["predatorviewdistance"])
-preyviewdistance = int(parameters["preyviewdistance"])
-predatorstart = [int(parameters['predatorstartx']), int(parameters['predatorstarty'])]
-preystart = [int(parameters['preystartx']), int(parameters['preystarty'])]
 
-
-predatorpositions = []
-preypositions = []
-predatorlist = []
-preylist = []
 actorlist = []
 
 
@@ -66,75 +41,82 @@ if __name__ == '__main__':
 
 
 
-
-
-
-    # initialise Actors and assign characteristics
-    for i in range(predatorcount + preycount):
-
-        if i < predatorcount:
-            role = 'predator'
-            size = predatorsize
-            startposition = predatorstart
-            walkspeed = predatorwalkspeed
-            viewdistance = predatorviewdistance
-        else:
-            role = 'prey'
-            size = preysize
-            startposition = preystart
-            walkspeed = preywalkspeed
-            viewdistance = preyviewdistance
-
-        # Create actors and print out list
-        Actor = Actors()
-        #print("{} is {}, start position {}, walkspeed {}, viewdistance {}, size = {}".format(Actor.id, Actor.role, Actor.position, Actor.walkspeed, Actor.viewdistance, Actor.size))
-        actorlist.append(Actor)
+    actorlist = generate_actors.generate_actors()
 
     #print("\n\nActors generated\n\n")
-    winner = 0
+    winner = [0, 0]
+    for Actor in actorlist:
+        print(f"Actor {Actor.id} operating as {Actor.role} starts game at position {Actor.position}")
 
-
-    while t < duration and winner != 1:
+    while t < duration and winner[0] != 1:
         print("\n------------Round {}------------\n".format(t))
+
         for Actor in actorlist:
-            print(f"\nActor {Actor.id} operating as {Actor.role} starts round at position {Actor.position}")
+            print(f"Actor {Actor.id} in role {Actor.role} starting round at position {Actor.position}")
+        print("")
+        for Actor in actorlist:
 
             predatorspotted = checkforpredators.checkforpredators(Actor.position, Actor.viewdistance, actorlist, Actor.role)
 
             if predatorspotted == [0, 0]:
                 if Actor.role == "prey":
                     print("Prey {} safe".format(Actor.id))
+                else:
+                    print(f"Predator {Actor.id} can't see food")
 
                 movement = weightedfreeroam.weightedfreeroam(Actor.lastmovement, Actor.walkspeed)
+
                 print(f"Movement for actor {Actor.id} in weighted freeroam = {movement}")
+
             else:
-                print("Actor {} predator spotted at {}\n".format(Actor.id, predatorspotted))
+                print("{}{} spots enemy at {}\n".format(Actor.role, Actor.id, predatorspotted))
+
+                if Actor.role == "predator":
+                    for i in range(2):
+                        predatorspotted[i] = predatorspotted[i]*-1
 
                 movement = runawaaay.runawaaay(Actor.walkspeed, predatorspotted, Actor.viewdistance)
-                print("\n\n\n---------------------Actor {} running from predator at vector {} with movement {}".format(Actor.id, predatorspotted, movement))
-            print(f"{Actor.role} movement before boundary check = {movement}")
+
+                if Actor.role == "prey":
+                    print("\n\n\n{}{} running from predator at  vector {} with movement {}".format(Actor.role, Actor.id, predatorspotted, movement))
+                else:
+                    print("\n\n\n------------------------------------{}{} running to prey at vector {} with movement {}".format(Actor.role, Actor.id, predatorspotted, movement))
+
             movement = boundarycheck.boundarycheck(predatorspotted, Actor.position, movement, groundsize, randmax)
-            print(f"{Actor.role} movement after boundary check = {movement}")
             print(f"{Actor.role} position before update = {Actor.position}")
             Actor.position = updateposition.updateposition(Actor.position, movement)
             print(f"{Actor.role} position after update = {Actor.position}")
             Actor.lastmovement = movement
-            if Actor.role == 'predator':
-                winner = checkforwinner.checkforwinner(Actor.position, actorlist)
-            else:
-                winner = 0
+
+
 
             #if Actor.id == 0:
              #   print('\nRound ending position{}\n'.format(Actor.position))
 
+            if Actor.role == 'predator':
+                winner = checkforwinner.checkforwinner(Actor.position, actorlist, Actor.walkspeed)
+                print(f"Winner = {winner}")
 
+            else:
+                winner = [0, 0]
 
-
-
+            if winner[0] == 1:
+                for i in range(2):
+                    movement[i] = actorlist[winner[1]].position[i] - Actor.position[i]
+                print(f"Movement = {movement}")
+                updateposition.updateposition(Actor.position, movement)
+                del(actorlist[winner[1]])
+                print(f"Actor {winner[1]} killed!")
             #if Actor.id == 0:
                # print("{} position - \n\n{}\n\n".format(Actor.id, Actor.position))
 
         outputmanager.populateoutputfiles(actorlist)
 
         t += 1
+
+    if winner[0] == 0:
+        print("\n\nPrey escapes")
+    else:
+        print("\n\nPredator Wins")
+    print(f"\n{t} rounds played")
 
