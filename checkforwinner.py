@@ -1,15 +1,10 @@
-def checkforwinner(position, actorlist, walkspeed):
+def checkforwinner(position, actorlist, lunge):
 
     for Actor in actorlist:
-        print("Checking for winner\n\n")
-        print(f"{abs(Actor.position[0]-(position[0]))} < {walkspeed}")
-        print(f"{abs(Actor.position[1]-(position[1]))} < {walkspeed}")
 
-        print(f"Actor role = {Actor.role}")
-
-        if (abs(Actor.position[0]-(position[0])) <= walkspeed/2) and (abs(Actor.position[1]-(position[1])) <= walkspeed/2) and Actor.role == "prey":
-            print(f"Predator position = {position}, {Actor.role} position = {Actor.position}\n\n\nWINNNNNER")
+        if (abs(Actor.position[0]-(position[0])) <= lunge) and (abs(Actor.position[1]-(position[1])) <= lunge) and Actor.role == "prey" and Actor.dying == 0:
             winner = [1, Actor.id]
+            return winner
 
         else:
             winner = [0, 0]

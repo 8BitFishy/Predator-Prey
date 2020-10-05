@@ -1,6 +1,6 @@
 import os
 
-def populateoutputfiles(actorlist):
+def populateoutputfiles(actorlist, dead):
 
 
 
@@ -23,7 +23,10 @@ def populateoutputfiles(actorlist):
 
         actoroutput = ('{}\\Actor{}{}vectors.txt'.format(newpath, Actor.role, actorcount))
 
-        Actor.position.append(Actor.size/2)
+        if Actor.state == 1:
+            Actor.position.append(Actor.size/2)
+        else:
+            Actor.position.append(dead[1])
 
         
         with open(actoroutput, 'a')as file_object:

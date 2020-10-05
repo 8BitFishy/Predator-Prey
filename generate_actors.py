@@ -1,7 +1,7 @@
 import random
 from itertools import count
 
-def generate_actors():
+def generate_actors(groundsize):
 
     class Actors:
         _ids = count(0)
@@ -14,6 +14,11 @@ def generate_actors():
             self.walkspeed = walkspeed
             self.viewdistance = viewdistance
             self.lastmovement = [0, 0]
+            self.lunge = walkspeed*2
+            self.state = 1
+            self.dying = 0
+            self.hungry = 1
+            self.longevity = longevity
 
     parameters = {}
 
@@ -40,10 +45,6 @@ def generate_actors():
     actorlist = []
 
 
-
-    print(predatorstart)
-    print(preystart)
-
     # initialise Actors and assign characteristics
     for i in range(predatorcount + preycount):
         startposition = [0, 0]
@@ -51,13 +52,15 @@ def generate_actors():
         size = preysize
         walkspeed = preywalkspeed
         viewdistance = preyviewdistance
+        longevity = 50
 
 
-        if i < predatorcount:
+        if i >= preycount:
             role = 'predator'
             size = predatorsize
             for j in range(0, 2):
-                startposition[j] = predatorstart[j] + random.randint(-10, 10)
+                startposition[j] = random.randint(int(-groundsize/2), int(groundsize/2))
+            longevity = longevity + random.randint(-10, 10)
             walkspeed = predatorwalkspeed
             viewdistance = predatorviewdistance
 
@@ -67,18 +70,15 @@ def generate_actors():
             role = 'prey'
             size = preysize
             for j in range(0, 2):
-                startposition[j] = preystart[j] + random.randint(-10, 10)
+                startposition[j] = random.randint(int(-groundsize/2), int(groundsize/2))
             walkspeed = preywalkspeed
             viewdistance = preyviewdistance
 
 
         # Create actors and print out list
         Actor = Actors()
-        print("{} is {}, start position {}, walkspeed {}, viewdistance {}, size = {}".format(Actor.id, Actor.role, Actor.position, Actor.walkspeed, Actor.viewdistance, Actor.size))
         actorlist.append(Actor)
 
-    for Actor in actorlist:
-        print(f"\nActor ID = {Actor.id}\nRole = {Actor.role}\nStart Position = {Actor.position}\nWalkspeed = {Actor.walkspeed}\nView Distance = {Actor.viewdistance}")
     return actorlist
 
 
