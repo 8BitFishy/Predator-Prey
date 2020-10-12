@@ -23,7 +23,7 @@ def populateoutputfiles(actorlist, dead):
 
         actoroutput = ('{}\\Actor{}{}vectors.txt'.format(newpath, Actor.role, actorcount))
 
-        if Actor.state == 1:
+        if Actor.alive == 1:
             Actor.position.append(Actor.size/2)
         else:
             Actor.position.append(dead[1])

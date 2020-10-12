@@ -2,6 +2,7 @@ import random
 
 def overlapcheck(actorlist, position, movement, role, randmax, size, id, walkspeed):
     doublecheck = 0
+    stuck = 0
     while doublecheck < 2:
         for Actor in actorlist:
 

@@ -1,9 +1,26 @@
-def checkforpredators(position, viewdistance, actorlist, role):
+def checkforpredators(position, viewdistance, actorlist, target, role, id):
     moveaway = [0, 0]
     closest = [viewdistance, viewdistance]
+    search = 'predator'
+
+    #if target is food, search for appropriate food
+    if target == 'food':
+        if role == 'predator':
+            search = 'prey'
+        else:
+            search = 'plant'
+
+    #if target is mate, search for mate
+    elif target == 'mate':
+        search = role
+
+    #else search for predator
+    else:
+        search == 'predator'
+
     for Actor in actorlist:
 
-        if (role != Actor.role):
+        if (Actor.role == search and Actor.id != id):
             # check for predators in x and y direction
             xcheck = Actor.position[0] - position[0]
             ycheck = Actor.position[1] - position[1]

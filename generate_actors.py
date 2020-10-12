@@ -1,6 +1,8 @@
 import random
 from itertools import count
 
+
+
 def generate_actors(groundsize):
 
     class Actors:
@@ -14,11 +16,13 @@ def generate_actors(groundsize):
             self.walkspeed = walkspeed
             self.viewdistance = viewdistance
             self.lastmovement = [0, 0]
-            self.lunge = walkspeed*2
-            self.state = 1
+            self.lunge = walkspeed * 2
+            self.alive = 1
             self.dying = 0
-            self.hungry = 1
-            self.longevity = longevity
+            self.hunger = starthunger
+            self.sated = 0
+            self.longevity = startlongevity
+            self.randy = startrandy
 
     parameters = {}
 
@@ -52,7 +56,9 @@ def generate_actors(groundsize):
         size = preysize
         walkspeed = preywalkspeed
         viewdistance = preyviewdistance
-        longevity = 50
+        startlongevity = 100
+        starthunger = 30
+        startrandy = 15
 
 
         if i >= preycount:
@@ -60,7 +66,7 @@ def generate_actors(groundsize):
             size = predatorsize
             for j in range(0, 2):
                 startposition[j] = random.randint(int(-groundsize/2), int(groundsize/2))
-            longevity = longevity + random.randint(-10, 10)
+            longevity = startlongevity + random.randint(-10, 10)
             walkspeed = predatorwalkspeed
             viewdistance = predatorviewdistance
 
