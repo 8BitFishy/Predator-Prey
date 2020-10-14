@@ -1,14 +1,10 @@
 import os
 
 
-
-
-
 def populateoutputfiles(actorlist, dead):
     actorcount = 0
     preycount = 0
     predcount = 0
-
     newpath = 'vectors'
 
     if not os.path.exists(newpath):
@@ -23,7 +19,7 @@ def populateoutputfiles(actorlist, dead):
             predcount += 1
             actorcount = predcount
 
-        actoroutput = ('{}\\Actor{}{}vectors.txt'.format(newpath, Actor.role, actorcount))
+        actoroutput = ('{}\\{}{}vectors.txt'.format(newpath, Actor.role, actorcount))
 
         if Actor.alive == 1:
             Actor.position.append(Actor.size/2)
@@ -68,7 +64,7 @@ def backfill_vectors(actorlist, t, dead):
                 actorcount = preycount
 
 
-    actoroutput = ('{}\\Actor{}{}vectors.txt'.format(newpath, Actor.role, actorcount))
+    actoroutput = ('{}\\{}{}vectors.txt'.format(newpath, Actor.role, actorcount))
 
 
 
@@ -92,25 +88,29 @@ def backfill_vectors(actorlist, t, dead):
 
 def output_characteristics(actorlist):
     newpath = 'actors'
-    actorcount = 0
-    preycount = 0
-    predcount = 0
-
+    actorcount = preycount = predcount = 0
 
     if not os.path.exists(newpath):
         os.makedirs(newpath)
+
+
+    preycount = predcount = 0
 
     for Actor in actorlist:
 
         if Actor.role == "prey":
             preycount += 1
             actorcount = preycount
+
+
         else:
             predcount += 1
             actorcount = predcount
 
-        actoroutput = ('{}\\Actor{}{}characteristics.txt'.format(newpath, Actor.role, actorcount))
+        actoroutput = ('{}\\Actor{} - {}{}characteristics.txt'.format(newpath, Actor.id, Actor.role, actorcount))
 
+        if Actor.causeofdeath == "":
+            Actor.causeofdeath = "survived"
 
         with open(actoroutput, 'a')as file_object:
 
@@ -121,7 +121,14 @@ def output_characteristics(actorlist):
             file_object.write(str(f"\nActor viewdistance = {Actor.viewdistance}"))
             file_object.write(str(f"\nActor longevity = {Actor.longevity}"))
             file_object.write(str(f"\nActor birth = {Actor.birth}"))
+            file_object.write(str(f"\nActor parent1 = {Actor.parent1}"))
+            file_object.write(str(f"\nActor parent2 = {Actor.parent2}"))
             file_object.write(str(f"\nActor death = {Actor.death}"))
+            file_object.write(str(f"\nActor age = {Actor.age}"))
+            file_object.write(str(f"\nActor lifespan = {Actor.lifespan}"))
+            file_object.write(str(f"\nCause of death = {Actor.causeofdeath}"))
+            file_object.write(str(f"\nOffspring = {Actor.timesmated}"))
+            file_object.write(str(f"\nEnemies eaten = {Actor.enemieseaten}"))
 
     return()
 

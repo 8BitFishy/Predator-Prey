@@ -1,11 +1,12 @@
 import random
+import mutation
 from itertools import count
 
 
 class Actors:
     _ids = count(0)
 
-    def __init__(self, role, size, position, walkspeed, viewdistance, hunger, longevity, randy, birth, death, lifespan):
+    def __init__(self, role, size, position, walkspeed, viewdistance, hunger, longevity, randy, birth, death, lifespan, parent1, parent2):
         self.id = next(self._ids)
         self.role = role
         self.size = size
@@ -22,52 +23,58 @@ class Actors:
         self.randy = randy
         self.birth = birth
         self.death = death
+        self.age = 0
         self.lifespan = lifespan
+        self.causeofdeath = ""
+        self.parent1 = parent1
+        self.parent2 = parent2
+        self.timesmated = 0
+        self.enemieseaten = 0
 
 
 def generate_actors(groundsize, parameters):
 
-    predatorsize = parameters["predatorsize"]
-    preysize = parameters["preysize"]
     predatorcount = parameters["predatorcount"]
     preycount = parameters["preycount"]
-    predatorwalkspeed = parameters["predatorwalkspeed"]
+
+
+
     preywalkspeed = parameters["preywalkspeed"]
-    predatorviewdistance = parameters["predatorviewdistance"]
     preyviewdistance = parameters["preyviewdistance"]
     actorlist = []
-
+    parent1 = -1
+    parent2 = -1
     birth = 0
     death = -1
 
     # initialise Actors and assign characteristics
     for i in range(predatorcount + preycount):
         position = [0, 0]
-        role = 'prey'
-        size = preysize
-        walkspeed = preywalkspeed
-        viewdistance = preyviewdistance
         longevity = parameters["predlongevity"]
-        hunger = 30
         randy = parameters["predrandy"]
         lifespan = parameters["predatorlifespan"]
-
+        hunger = parameters["predrandy"] + 15
 
         if i >= preycount:
-            role = 'predator'
-            size = predatorsize
+
             for j in range(0, 2):
                 position[j] = random.randint(int(-groundsize/2), int(groundsize/2))
-            longevity = parameters["predlongevity"] + random.randint(-10, 10)
-            walkspeed = predatorwalkspeed
-            viewdistance = predatorviewdistance
-            lifespan = parameters["predatorlifespan"]
+
+            walkspeed = mutation.mutation(parameters["predatorwalkspeed"] - 1, parameters["predatorwalkspeed"] + 1)
+            viewdistance = mutation.mutation(parameters["predatorviewdistance"] - 1, parameters["predatorviewdistance"] + 1)
+            longevity = mutation.mutation(parameters["predlongevity"] - 1, parameters["predlongevity"] + 1)
+            lifespan = mutation.mutation(parameters["predatorlifespan"] - 1, parameters["predatorlifespan"] + 1)
+            hunger = mutation.mutation(parameters["predrandy"] + 10, parameters["predrandy"] + 20)
+            role = 'predator'
+            size = parameters['predatorsize']
+
+
 
 
 
         else:
             role = 'prey'
-            size = preysize
+            size = parameters["preysize"]
             for j in range(0, 2):
                 position[j] = random.randint(int(-groundsize/2), int(groundsize/2))
             walkspeed = preywalkspeed
@@ -75,7 +82,7 @@ def generate_actors(groundsize, parameters):
 
 
         # Create actors and print out list
-        Actor = Actors(role, size, position, walkspeed, viewdistance, hunger, longevity, randy, birth, death, lifespan)
+        Actor = Actors(role, size, position, walkspeed, viewdistance, hunger, longevity, randy, birth, death, lifespan, parent1, parent2)
         actorlist.append(Actor)
 
 
@@ -88,75 +95,28 @@ def generate_actors(groundsize, parameters):
 def createnewactor(actorlist, parent1, parent2, parameters, t):
 
         position = [0, 0]
+        hunger = parameters["predrandy"]+10
+        randy = parameters["predrandy"]
+        birth = t
+        death = -1
 
         for j in range(0, 2):
             position[j] = int((actorlist[parent1].position[j] + actorlist[parent2].position[j])/2)
 
-        predatorsize = parameters["predatorsize"]
-        preysize = parameters["preysize"]
-        predatorwalkspeed = parameters["predatorwalkspeed"]
-        preywalkspeed = parameters["preywalkspeed"]
-        predatorviewdistance = parameters["predatorviewdistance"]
-        preyviewdistance = parameters["preyviewdistance"]
-
-
-        longevity = parameters["predlongevity"]
-        hunger = 30
-        randy = parameters["predrandy"]
-
-        birth = t
-        death = -1
-
-
-        if actorlist[parent1].role == 'predator':
-            role = actorlist[parent1].role
-            size = actorlist[parent1].size
-
-            print(f"Parent 1 longevity - {actorlist[parent1].longevity}")
-            print(f"Parent 2 longevity - {actorlist[parent2].longevity}")
-
-            diceroll = random.randint(0, 100)
-            print(f"Diceroll = {diceroll}")
-
-            if diceroll < 40:
-                longevity = actorlist[parent1].longevity
-
-            elif diceroll >= 40 and diceroll < 80:
-                longevity = actorlist[parent2].longevity
-
-            elif diceroll >= 80 and diceroll < 90:
-                if actorlist[parent2].longevity >= actorlist[parent1].longevity:
-                    longevity = actorlist[parent2].longevity + random.randint(1, 20)
-                    print("Mutation!")
-
-                else:
-                    longevity = actorlist[parent1].longevity + random.randint(1, 20)
-                    print("Mutation!")
-            else:
-                if actorlist[parent2].longevity >= actorlist[parent1].longevity:
-                    longevity = actorlist[parent1].longevity - random.randint(1, 20)
-                    print("Mutation!")
-                else:
-                    longevity = actorlist[parent2].longevity - random.randint(1, 20)
-                    print("Mutation!")
-
-            walkspeed = actorlist[parent1].walkspeed
-            viewdistance = actorlist[parent1].viewdistance
-            lifespan = parameters["predatorlifespan"]
-
-
-        else:
-            role = 'prey'
-            size = preysize
-            walkspeed = preywalkspeed
-            viewdistance = preyviewdistance
+        walkspeed = mutation.mutation(actorlist[parent1].walkspeed, actorlist[parent2].walkspeed)
+        viewdistance = mutation.mutation(actorlist[parent1].viewdistance, actorlist[parent2].viewdistance)
+        longevity = mutation.mutation(actorlist[parent1].longevity, actorlist[parent2].longevity)
+        lifespan = mutation.mutation(actorlist[parent1].lifespan, actorlist[parent2].lifespan)
+        role = actorlist[parent1].role
+        size = actorlist[parent1].size
 
 
         print(f"Generating new actor:")
         # Create actors and print out list
-        Actor = Actors(role, size, position, walkspeed, viewdistance, hunger, longevity, randy, birth, death, lifespan)
+        Actor = Actors(role, size, position, walkspeed, viewdistance, hunger, longevity, randy, birth, death, lifespan, parent1, parent2)
         actorlist.append(Actor)
-
+        print(f"Parent 1 - {actorlist[parent1].id}")
+        print(f"Parent 1 - {actorlist[parent2].id}")
         print(f"Actor{Actor.id}")
         print(f"Actor role - {Actor.role}")
         print(f"Actor size - {Actor.size}")
@@ -166,6 +126,7 @@ def createnewactor(actorlist, parent1, parent2, parameters, t):
         print(f"Actor hunger - {Actor.hunger}")
         print(f"Actor longevity - {Actor.longevity}")
         print(f"Actor randy - {Actor.randy}")
+
 
 
         return(actorlist)

@@ -1,3 +1,5 @@
+import relationcheck
+
 def checkforpredators(position, viewdistance, actorlist, target, role, id):
     moveaway = [0, 0]
     closest = [viewdistance, viewdistance]
@@ -20,7 +22,8 @@ def checkforpredators(position, viewdistance, actorlist, target, role, id):
 
     for Actor in actorlist:
 
-        if (Actor.role == search and Actor.id != id):
+        if (Actor.role == search and Actor.id != id and relationcheck.relationcheck(id, Actor.id, actorlist)):
+
             # check for predators in x and y direction
             xcheck = Actor.position[0] - position[0]
             ycheck = Actor.position[1] - position[1]

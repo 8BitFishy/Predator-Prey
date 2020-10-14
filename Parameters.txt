@@ -1,12 +1,12 @@
 predatorsize = 3
 preysize = 1.5
-groundsize = 500
+groundsize = 1000
 
-predatorcount = 4
-predatorlifespan = 100
+predatorcount = 30
+predatorlifespan = 300
 predatorwalkspeed = 10
 predatorviewdistance = 50
-predlongevity = 70
+predlongevity = 150
 predrandy = 30
 predmatingpenalty = 20
 predmatingwait = 10
@@ -17,3 +17,10 @@ predeatingwait = 5
 preycount = 300
 preywalkspeed = 6
 preyviewdistance = 20
+preylongevity = 70
+preyrandy = 30
+preymatingpenalty = 20
+preymatingwait = 10
+preybornwait = 15
+preyeatinggain = 20
+preyeatingwait = 5

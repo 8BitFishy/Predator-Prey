@@ -66,7 +66,7 @@ if __name__ == '__main__':
             else:
 
                 #if actor is not moving this round, make relevant updates
-                if Actor.dying == 1 or Actor.sated > 0 or Actor.hunger > Actor.longevity or Actor.lifespan == 1:
+                if Actor.dying == 1 or Actor.sated > 0 or Actor.hunger > Actor.longevity or Actor.age > Actor.lifespan:
 
                     #if actor is dying, set it to dead, assign no movement and decrement population count
                     if Actor.dying == 1:
@@ -78,13 +78,15 @@ if __name__ == '__main__':
                         if Actor.role == 'predator':
                             predatorsleft -= 1
 
-                    if Actor.lifespan == 1:
-                        print(f"Actor{Actor.id} dies of old age")
+                    if Actor.age > Actor.lifespan:
+                        print(f"Actor{Actor.id} dies of old age after {Actor.age + 1} turns")
+                        Actor.causeofdeath = "old age"
                         Actor.dying = 1
 
                     #if actor is starving to death set state to dying
                     if Actor.hunger > Actor.longevity:
                         print(f"Actor{Actor.id} dies of starvation")
+                        Actor.causeofdeath = "starvation"
                         Actor.dying = 1
 
                     #if actor is sated, wait and decrement sated
@@ -137,7 +139,7 @@ if __name__ == '__main__':
                         else:
 
                             #check for nearby targets, if found return list [1, X] signifying ['target found', actor number]
-                            winner = checkforwinner.checkforwinner(Actor.position, actorlist, Actor.lunge, target,Actor.role, Actor.id)
+                            winner = checkforwinner.checkforwinner(Actor.position, actorlist, Actor.lunge, target, Actor.role, Actor.id)
 
                             #if target within lunge distance is found, move to target position and perform appropriate action
                             if winner[0] == 1:
@@ -149,9 +151,11 @@ if __name__ == '__main__':
                                     #set food state to dying, set actor state to sated (wait one turn to digest), decrease hunger value, remove 'dying' state
                                     print(f"Actor{Actor.id} in role {Actor.role} eats actor{actorlist[winner[1]].id}")
                                     actorlist[winner[1]].dying = 1
+                                    actorlist[winner[1]].causeofdeath = f"eaten by actor {Actor.id}"
                                     Actor.sated = parameters["predeatingwait"]
                                     Actor.hunger -= parameters["predeatinggain"]
                                     Actor.dying = 0
+                                    Actor.enemieseaten += 1
 
 
                                     #else:
@@ -163,6 +167,8 @@ if __name__ == '__main__':
                                     actorlist = generate_actors.createnewactor(actorlist, Actor.id, actorlist[winner[1]].id, parameters, t)
                                     print(f"Actor{actorlist[len(actorlist)-1].id} born in role {actorlist[len(actorlist)-1].role}")
                                     outputmanager.backfill_vectors(actorlist, t, dead)
+                                    Actor.timesmated += 1
+                                    actorlist[winner[1]].timesmated += 1
                                     if Actor.role == 'predator':
                                         Actor.sated = actorlist[winner[1]].sated = parameters["predmatingwait"]
                                         actorlist[-1].sated = parameters["predbornwait"]
@@ -183,7 +189,7 @@ if __name__ == '__main__':
             if Actor.role == 'predator':
                 #increment hunger value
                 Actor.hunger += 1
-                Actor.lifespan -= 1
+                Actor.age += 1
 
 
             #check for wall and update movement accordingly
