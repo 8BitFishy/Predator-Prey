@@ -9,27 +9,18 @@ import checkforwinner
 import generate_actors
 import overlapcheck
 import os
-#import createnewactor
+import read_parameters
 
 parameters = {}
-
-with open("Parameters.txt") as f:
-    for line in f:
-        name, value = line.split("=")
-        name = name.rstrip(" ")
-        parameters[name] = value.rstrip('\n')
-
 duration = 0
-groundsize = float(parameters["groundsize"])
-predatorcount = int(parameters["predatorcount"])
-preycount = int(parameters["preycount"])
-randmax = int(parameters["randmax"])
-
 actorlist = []
 dead = [9000, 9000]
 predatorsleft = 0
 preyleft = 0
 target = 'predator'
+randmax = 1000
+
+
 
 #_________________________Start of main simulation___________________________
 
@@ -42,7 +33,14 @@ if __name__ == '__main__':
 
     t = 0
 
-    actorlist = generate_actors.generate_actors(groundsize)
+    #todo complete implementing parameters dictionary for use in methods
+    parameters = read_parameters.read_parameters()
+    groundsize = parameters["groundsize"]
+    predatorcount = parameters["predatorcount"]
+    preycount = parameters["preycount"]
+
+
+    actorlist = generate_actors.generate_actors(groundsize, parameters)
     for Actor in actorlist:
         if Actor.role == 'predator':
             predatorsleft += 1
@@ -52,42 +50,37 @@ if __name__ == '__main__':
     #print("\n\nActors generated\n\n")
 
 
-    for Actor in actorlist:
-        print(f"Actor {Actor.id} operating as {Actor.role} starts game at position {Actor.position}")
-
-
     while preyleft != 0 and predatorsleft != 0:
-        print("\n------------Round {}, frame {}------------\n".format(t, t*5))
+        print(f"Round {t}, Frame {t*5} - {preyleft} prey left, {predatorsleft} predators left")
 
-        #for Actor in actorlist:
-         #   print(f"Actor{Actor.id} in role {Actor.role} starts round with traits:\nState - {Actor.state}\nWaiting - {Actor.waiting}\nHungry - {Actor.hungry}\nLongevity - {Actor.longevity}\nDying - {Actor.dying}")
 
-        print("")
         #Generate vectors for each actor
         for Actor in actorlist:
 
             # if actor is dead, move off the board
             if Actor.alive == 0:
                 Actor.position = dead
-                print(f"Actor{Actor.id} dead")
                 continue
 
             # If actor is alive, update stats
             else:
 
                 #if actor is not moving this round, make relevant updates
-                if Actor.dying == 1 or Actor.sated > 0 or Actor.hunger > Actor.longevity:
+                if Actor.dying == 1 or Actor.sated > 0 or Actor.hunger > Actor.longevity or Actor.lifespan == 1:
 
                     #if actor is dying, set it to dead, assign no movement and decrement population count
                     if Actor.dying == 1:
-                        print(f"Actor{Actor.id} in role {Actor.role}, dying = {Actor.dying}")
                         Actor.alive = 0
-                        Actor.dying = 0
                         movement = [0, 0]
+                        Actor.death = t
                         if Actor.role == 'prey':
                             preyleft -= 1
                         if Actor.role == 'predator':
                             predatorsleft -= 1
+
+                    if Actor.lifespan == 1:
+                        print(f"Actor{Actor.id} dies of old age")
+                        Actor.dying = 1
 
                     #if actor is starving to death set state to dying
                     if Actor.hunger > Actor.longevity:
@@ -96,7 +89,6 @@ if __name__ == '__main__':
 
                     #if actor is sated, wait and decrement sated
                     if Actor.sated > 0:
-                        print(f"Actor{Actor.id} sated")
                         movement = [0, 0]
                         Actor.sated -= 1
 
@@ -131,7 +123,6 @@ if __name__ == '__main__':
                         #if no target spotted, freeroam
                         if targetspotted == [0, 0]:
                             movement = weightedfreeroam.weightedfreeroam(Actor.lastmovement, Actor.walkspeed)
-                            print(f"Actor{Actor.id} freeroams")
 
 
                     #if target found, react accordingly, output a movement vector
@@ -140,7 +131,6 @@ if __name__ == '__main__':
                         #if predator is spotted, flee
                         if target == 'predator':
                             # turn target vector into movement vector
-                            print(f"Actor{Actor.id} flees predator")
                             movement = runawaaay.runawaaay(Actor.walkspeed, targetspotted)
 
                         #if not fleeing from predator
@@ -159,8 +149,8 @@ if __name__ == '__main__':
                                     #set food state to dying, set actor state to sated (wait one turn to digest), decrease hunger value, remove 'dying' state
                                     print(f"Actor{Actor.id} in role {Actor.role} eats actor{actorlist[winner[1]].id}")
                                     actorlist[winner[1]].dying = 1
-                                    Actor.sated = 3
-                                    Actor.hunger -= 20
+                                    Actor.sated = parameters["predeatingwait"]
+                                    Actor.hunger -= parameters["predeatinggain"]
                                     Actor.dying = 0
 
 
@@ -169,51 +159,63 @@ if __name__ == '__main__':
 
                                 #else if target is mate, perform mating
                                 else:
-                                    #actorlist = generate_actors.createnewactor(actorlist, Actor.id, actorlist[winner[1]].id, t)
-                                    #todo implement generate offspring
-                                    Actor.sated = actorlist[winner[1]].sated = 10
                                     print(f"Actor{Actor.id} mates with {actorlist[winner[1]].id}")
+                                    actorlist = generate_actors.createnewactor(actorlist, Actor.id, actorlist[winner[1]].id, parameters, t)
                                     print(f"Actor{actorlist[len(actorlist)-1].id} born in role {actorlist[len(actorlist)-1].role}")
-                                    Actor.hunger += 20
-                                    actorlist[winner[1]].hunger += 20
+                                    outputmanager.backfill_vectors(actorlist, t, dead)
+                                    if Actor.role == 'predator':
+                                        Actor.sated = actorlist[winner[1]].sated = parameters["predmatingwait"]
+                                        actorlist[-1].sated = parameters["predbornwait"]
+                                        Actor.hunger += parameters["predmatingpenalty"]
+                                        actorlist[winner[1]].hunger += parameters["predmatingpenalty"]
+                                        predatorsleft += 1
+                                    else:
+                                        preyleft += 1
 
-                                    #if actorlist[len(actorlist)-1].role == 'predator':
-                                     #   predatorsleft += 1
-                                    #elif Actor.role == 'prey':
-                                     #   preyleft += 1
 
                             #if no target found within distance, invert target spotted to ensure movement towards target
                             else:
                                 for i in range(2):
                                     targetspotted[i] = targetspotted[i] * -1
-                                print(f"Actor{Actor.id} moves towards {target} at vector {targetspotted}")
                                 movement = runawaaay.runawaaay(Actor.walkspeed, targetspotted)
 
 
             if Actor.role == 'predator':
                 #increment hunger value
                 Actor.hunger += 1
+                Actor.lifespan -= 1
 
 
             #check for wall and update movement accordingly
-            if target != 'mate':
-                movement = overlapcheck.overlapcheck(actorlist, Actor.position, movement, Actor.role, randmax, Actor.size, Actor.id, Actor.walkspeed)
+            movement = overlapcheck.overlapcheck(actorlist, Actor.position, movement, Actor.role, randmax, Actor.size, Actor.id, Actor.walkspeed)
             movement = boundarycheck.boundarycheck(targetspotted, Actor.position, movement, groundsize, randmax)
-
-            print(f"Actor{Actor.id} moves {movement}\n")
 
             #update actor position and last movement
             Actor.position = updateposition.updateposition(Actor.position, movement)
             Actor.lastmovement = movement
 
 
-        print(f"{preyleft} prey left, {predatorsleft} predators left")
 
         #write vectors to vector files and increment round
         outputmanager.populateoutputfiles(actorlist, dead)
         t += 1
 
 
+    predatortotal = preytotal = 0
+    predsleft = preysleft = 0
+
+    for Actor in actorlist:
+        if Actor.role == 'predator':
+            predatortotal += 1
+            if Actor.alive == 1:
+                predsleft += 1
+        else:
+            preytotal += 1
+            if Actor.alive == 1:
+                preysleft += 1
+
+    print(f"{predsleft} of {predatortotal} predators left alive")
+    print(f"{preysleft} of {preytotal} prey left alive")
 
 
     if preyleft > 0:
@@ -224,9 +226,9 @@ if __name__ == '__main__':
 
     print(f"\n{t} rounds played, {t*5} frames in animation")
 
-    f = open("Duration.txt", "w")
-    f.write(str(t))
-    f.close()
+
+    outputmanager.print_outputparams(actorlist, t)
+    outputmanager.output_characteristics(actorlist)
 
 
 

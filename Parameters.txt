@@ -1,15 +1,19 @@
-predatorsize=3
-predatorstartx=40
-predatorstarty=40
-preysize=1.5
-preystartx=-40
-preystarty=-40
-duration = 200
-groundsize = 100
-predatorcount = 3
-preycount = 20
-randmax = 1000
-predatorwalkspeed = 6
+predatorsize = 3
+preysize = 1.5
+groundsize = 500
+
+predatorcount = 4
+predatorlifespan = 100
+predatorwalkspeed = 10
+predatorviewdistance = 50
+predlongevity = 70
+predrandy = 30
+predmatingpenalty = 20
+predmatingwait = 10
+predbornwait = 15
+predeatinggain = 20
+predeatingwait = 5
+
+preycount = 300
 preywalkspeed = 6
-predatorviewdistance = 30
 preyviewdistance = 20
