@@ -10,6 +10,7 @@ import generate_actors
 import overlapcheck
 import os
 import read_parameters
+import math
 
 parameters = {}
 duration = 0
@@ -188,7 +189,14 @@ if __name__ == '__main__':
 
             if Actor.role == 'predator':
                 #increment hunger value
-                Actor.hunger += 1
+                if movement[0] == 0 and movement[1] != 0:
+                    Actor.hunger += int(abs(movement[1])*0.1)
+
+                elif movement[1] == 0 and movement[0] != 0:
+                    Actor.hunger += int(abs(movement[0])*0.1)
+
+                else:
+                    Actor.hunger += (int(math.sqrt((abs(movement[0])**2) + (abs(movement[1])**2)))*0.1)
                 Actor.age += 1
 
 

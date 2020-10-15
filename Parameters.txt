@@ -9,9 +9,9 @@ predatorviewdistance = 50
 predlongevity = 150
 predrandy = 30
 predmatingpenalty = 20
+predeatinggain = 20
 predmatingwait = 10
 predbornwait = 15
-predeatinggain = 20
 predeatingwait = 5
 
 preycount = 300

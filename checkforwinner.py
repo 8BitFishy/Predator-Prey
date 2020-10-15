@@ -26,7 +26,7 @@ def checkforwinner(position, actorlist, lunge, target, role, id):
     else:
         for Actor in actorlist:
 
-            if (abs(Actor.position[0] - (position[0])) <= lunge) and (abs(Actor.position[1] - (position[1])) <= lunge) and Actor.role == search and Actor.dying == 0 and Actor.id != id and Actor.hunger < Actor.randy and Actor.sated == 0 and Actor.age > 15:
+            if (abs(Actor.position[0] - (position[0])) <= lunge) and (abs(Actor.position[1] - (position[1])) <= lunge) and Actor.role == search and Actor.dying == 0 and Actor.id != id and Actor.hunger < Actor.randy and Actor.sated < 5 and Actor.age > 15:
                 if relationcheck.relationcheck(id, Actor.id, actorlist):
                     winner = [1, Actor.id]
                     return winner

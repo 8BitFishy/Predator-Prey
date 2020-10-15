@@ -95,7 +95,7 @@ def generate_actors(groundsize, parameters):
 def createnewactor(actorlist, parent1, parent2, parameters, t):
 
         position = [0, 0]
-        hunger = parameters["predrandy"]+10
+        hunger = parameters["predrandy"]+15
         randy = parameters["predrandy"]
         birth = t
         death = -1
@@ -111,21 +111,10 @@ def createnewactor(actorlist, parent1, parent2, parameters, t):
         size = actorlist[parent1].size
 
 
-        print(f"Generating new actor:")
         # Create actors and print out list
         Actor = Actors(role, size, position, walkspeed, viewdistance, hunger, longevity, randy, birth, death, lifespan, parent1, parent2)
         actorlist.append(Actor)
-        print(f"Parent 1 - {actorlist[parent1].id}")
-        print(f"Parent 1 - {actorlist[parent2].id}")
-        print(f"Actor{Actor.id}")
-        print(f"Actor role - {Actor.role}")
-        print(f"Actor size - {Actor.size}")
-        print(f"Actor position - {Actor.position}")
-        print(f"Actor walkspeed - {Actor.walkspeed}")
-        print(f"Actor viewdistance - {Actor.viewdistance}")
-        print(f"Actor hunger - {Actor.hunger}")
-        print(f"Actor longevity - {Actor.longevity}")
-        print(f"Actor randy - {Actor.randy}")
+
 
 
 

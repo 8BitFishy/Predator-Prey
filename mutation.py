@@ -5,10 +5,10 @@ def mutation(parent1, parent2):
     diceroll = random.randint(0, 100)
 
     if diceroll < 40:
-        trait = parent1
+        trait = parent1 + random.randint(-5, 5)
 
     elif diceroll >= 40 and diceroll < 80:
-        trait = parent2
+        trait = parent2 + random.randint(-5, 5)
 
     elif diceroll >= 80 and diceroll < 90:
 
