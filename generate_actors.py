@@ -1,12 +1,13 @@
 import random
 import mutation
+import outputmanager
 from itertools import count
 
 
 class Actors:
     _ids = count(0)
 
-    def __init__(self, role, size, position, walkspeed, viewdistance, hunger, longevity, randy, birth, death, lifespan, parent1, parent2):
+    def __init__(self, role, size, position, walkspeed, viewdistance, hunger, longevity, birth, death, lifespan, parent1, parent2, fertility):
         self.id = next(self._ids)
         self.role = role
         self.size = size
@@ -20,7 +21,6 @@ class Actors:
         self.hunger = hunger
         self.sated = 0
         self.longevity = longevity
-        self.randy = randy
         self.birth = birth
         self.death = death
         self.age = 0
@@ -30,15 +30,13 @@ class Actors:
         self.parent2 = parent2
         self.timesmated = 0
         self.enemieseaten = 0
+        self.fertility = fertility
 
 
 def generate_actors(groundsize, parameters):
-
+    plantcount = parameters["plantcount"]
     predatorcount = parameters["predatorcount"]
     preycount = parameters["preycount"]
-
-
-
     preywalkspeed = parameters["preywalkspeed"]
     preyviewdistance = parameters["preyviewdistance"]
     actorlist = []
@@ -51,38 +49,40 @@ def generate_actors(groundsize, parameters):
     for i in range(predatorcount + preycount):
         position = [0, 0]
         longevity = parameters["predlongevity"]
-        randy = parameters["predrandy"]
         lifespan = parameters["predatorlifespan"]
-        hunger = parameters["predrandy"] + 15
+        hunger = parameters["predlongevity"] /2
+        fertility = parameters["predfertility"]
+
 
         if i >= preycount:
-
-            for j in range(0, 2):
-                position[j] = random.randint(int(-groundsize/2), int(groundsize/2))
-
             walkspeed = mutation.mutation(parameters["predatorwalkspeed"] - 1, parameters["predatorwalkspeed"] + 1)
             viewdistance = mutation.mutation(parameters["predatorviewdistance"] - 1, parameters["predatorviewdistance"] + 1)
             longevity = mutation.mutation(parameters["predlongevity"] - 1, parameters["predlongevity"] + 1)
-            lifespan = mutation.mutation(parameters["predatorlifespan"] - 1, parameters["predatorlifespan"] + 1)
-            hunger = mutation.mutation(parameters["predrandy"] + 10, parameters["predrandy"] + 20)
+            lifespan = mutation.mutation(parameters["predatorlifespan"] - 10, parameters["predatorlifespan"] + 10)
+            hunger = mutation.mutation(parameters["predlongevity"]/2 - 10, parameters["predlongevity"]/2 + 10)
             role = 'predator'
             size = parameters['predatorsize']
+            fertility = parameters["predfertility"]
 
-
-
-
-
-        else:
-            role = 'prey'
-            size = parameters["preysize"]
             for j in range(0, 2):
                 position[j] = random.randint(int(-groundsize/2), int(groundsize/2))
-            walkspeed = preywalkspeed
-            viewdistance = preyviewdistance
+
+        else:
+            walkspeed = mutation.mutation(parameters["preywalkspeed"] - 1, parameters["preywalkspeed"] + 1)
+            viewdistance = mutation.mutation(parameters["preyviewdistance"] - 1, parameters["preyviewdistance"] + 1)
+            longevity = mutation.mutation(parameters["preylongevity"] - 1, parameters["preylongevity"] + 1)
+            lifespan = mutation.mutation(parameters["preylifespan"] - 10, parameters["preylifespan"] + 10)
+            hunger = mutation.mutation(parameters["preylongevity"]/2 - 10, parameters["preylongevity"]/2 + 10)
+            role = 'prey'
+            size = parameters['preysize']
+            fertility = parameters["preyfertility"]
+
+            for j in range(0, 2):
+                position[j] = random.randint(int(-groundsize/2), int(groundsize/2))
 
 
         # Create actors and print out list
-        Actor = Actors(role, size, position, walkspeed, viewdistance, hunger, longevity, randy, birth, death, lifespan, parent1, parent2)
+        Actor = Actors(role, size, position, walkspeed, viewdistance, hunger, longevity, birth, death, lifespan, parent1, parent2, fertility)
         actorlist.append(Actor)
 
 
@@ -95,8 +95,6 @@ def generate_actors(groundsize, parameters):
 def createnewactor(actorlist, parent1, parent2, parameters, t):
 
         position = [0, 0]
-        hunger = parameters["predrandy"]+15
-        randy = parameters["predrandy"]
         birth = t
         death = -1
 
@@ -109,13 +107,46 @@ def createnewactor(actorlist, parent1, parent2, parameters, t):
         lifespan = mutation.mutation(actorlist[parent1].lifespan, actorlist[parent2].lifespan)
         role = actorlist[parent1].role
         size = actorlist[parent1].size
+        fertility = 0
 
+        if role == 'predator':
+            hunger = longevity/2
+
+        elif role == 'prey':
+            hunger = longevity/2
 
         # Create actors and print out list
-        Actor = Actors(role, size, position, walkspeed, viewdistance, hunger, longevity, randy, birth, death, lifespan, parent1, parent2)
+        Actor = Actors(role, size, position, walkspeed, viewdistance, hunger, longevity, birth, death, lifespan, parent1, parent2, fertility)
         actorlist.append(Actor)
 
 
-
-
         return(actorlist)
+
+
+def generateplants(actorlist, groundsize, plantcount, t, dead, parameters):
+
+    for i in range(plantcount):
+
+        role = 'plant'
+        position = [0, 0]
+
+        for j in range(0, 2):
+            position[j] = random.randint(int(-groundsize/2), int(groundsize/2))
+
+        hunger = -1
+        birth = -1
+        death = -1
+        walkspeed = 0
+        viewdistance = 0
+        longevity = -1
+        lifespan = -1
+        size = parameters["plantsize"]
+        parent1 = -1
+        parent2 = -1
+        fertility = -1
+
+        Actor = Actors(role, size, position, walkspeed, viewdistance, hunger, longevity, birth, death, lifespan, parent1, parent2, fertility)
+        actorlist.append(Actor)
+        outputmanager.backfill_vectors(actorlist, t, dead)
+
+    return(actorlist)
