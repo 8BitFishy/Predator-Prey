@@ -66,6 +66,8 @@ if __name__ == '__main__':
                 causeofdeath = 2
             elif 'old' in actorstats["Cause of death"]:
                 causeofdeath = 3
+            else:
+                causeofdeath = 0
 
             Actor = Actors(id, role, walkspeed, viewdistance, birth, death, age, lifespan, causeofdeath, timesmated, enemieseaten, longevity)
             actorlist.append(Actor)

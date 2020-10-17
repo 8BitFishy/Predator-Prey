@@ -1,8 +1,12 @@
-/vectors
-/actors
-/plantvectors
-/plantactors
+vectors/*
+actors
+plantvectors
+plantactors
 
 stats.csv
-
-/log
+Outputparams.txt
+.blend1
+log/
+.replit
+.idea/
+__pycache__/
