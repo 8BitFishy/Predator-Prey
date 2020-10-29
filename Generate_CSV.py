@@ -20,7 +20,7 @@ class Actors:
         self.enemieseaten = enemieseaten
 
 
-if __name__ == '__main__':
+def Generate_CSV():
     outputparams = {}
     with open("Outputparams.txt") as f:
         for line in f:
@@ -151,7 +151,6 @@ if __name__ == '__main__':
                 preyold += 1
 
 
-
     print(f"Fastest predator = {predfastestactor} with speed {predfastest}")
     print(f"Fastest prey = {preyfastestactor} with speed {preyfastest}")
 
@@ -174,6 +173,28 @@ if __name__ == '__main__':
     print(f"Prey eaten = {preyeaten}")
     print(f"Prey died of starvation = {preystarved}")
     print(f"Prey died of old age = {preyold}")
+
+    filename = "Sim Actor Stats.txt"
+    if not os.path.exists(filename):
+        os.makedirs(filename)
+
+    f = open(filename, "w")
+    f.write(str((f"Fastest predator = {predfastestactor} with speed {predfastest}")))
+    f.write(str((f"Fastest prey = {preyfastestactor} with speed {preyfastest}")))
+    f.write(str((f"Hungriest predator = {predhungriestactor} with {predhungriest} eaten enemies")))
+    f.write(str((f"Hungriest prey = {preyhungriestactor} with {preyhungriest} eaten plants")))
+    f.write(str((f"Horniest predator = {predhorniestactor} with {predhorniest} offspring")))
+    f.write(str((f"Horniest prey = {preyhorniestactor} with {preyhorniest} offspring")))
+    f.write(str((f"Oldest predator = {predlongestlifeactor} at {predoldest} rounds")))
+    f.write(str((f"Oldest prey = {preylongestlifeactor} at {preyoldest} rounds")))
+    f.write(str((f"Predator with most longevity = {predmostlongevityactor} at {predlongevist} rounds")))
+    f.write(str((f"Prey with most longevity = {preymostlongevityactor} at {preylongevist} rounds")))
+    f.write(str((f"Predators eaten = {predeaten}")))
+    f.write(str((f"Predators died of starvation = {predstarved}")))
+    f.write(str((f"Predators died of old age = {predold}")))
+    f.write(str((f"Prey eaten = {preyeaten}")))
+    f.write(str((f"Prey died of starvation = {preystarved}")))
+    f.write(str((f"Prey died of old age = {preyold}")))
 
 
 

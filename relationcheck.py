@@ -8,17 +8,14 @@ def relationcheck(actor1, actor2, actorlist, parameters):
         #if actors are sated - no match
         if actorlist[actor2].sated < 5:
 
-            # if actors are too young - no match
-            if actorlist[actor2].age > 20:
+            # if actor 2 is infertile - no match
+            if actorlist[actor1].role == 'predator':
 
-                # if actor 2 is infertile - no match
-                if actorlist[actor1].role == 'predator':
-
-                    if actorlist[actor2].fertility > parameters["predfertility"]:
-                        fertile = True
-                else:
-                    if actorlist[actor2].fertility > parameters["preyfertility"]:
-                        fertile = True
+                if actorlist[actor2].fertility > parameters["predfertility"]:
+                    fertile = True
+            else:
+                if actorlist[actor2].fertility > parameters["preyfertility"]:
+                    fertile = True
 
     if fertile is True:
 
@@ -43,6 +40,9 @@ def relationcheck(actor1, actor2, actorlist, parameters):
             elif actorlist[actor2].parent1 == actorlist[actor1].parent1 or actorlist[actor2].parent1 == actorlist[actor1].parent2:
                 return False
 
-    #otherwise match
+            else:
+                return True
+
+    #otherwise no match
     else:
         return False

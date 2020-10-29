@@ -13,7 +13,7 @@ def print_log(log):
 
 
 
-def populateoutputfiles(actorlist, dead):
+def populateoutputfiles(actorlist, dead, t):
     actorcount = 0
     preycount = 0
     predcount = 0
@@ -42,79 +42,18 @@ def populateoutputfiles(actorlist, dead):
 
         actoroutput = ('{}\\{}{}vectors.txt'.format(newpath, Actor.role, actorcount))
 
-        if Actor.alive == 1:
-            Actor.position.append(Actor.size/2)
-        else:
-            Actor.position.append(dead[1])
-
-        
         with open(actoroutput, 'a')as file_object:
 
-            for e in range(0, 3):
-                file_object.write(str(Actor.position[e]))
-                if e != 2:
-                    file_object.write(",")
-            file_object.write("\n")
+            for i in range(t):
 
-            del Actor.position[2]
-
-
-
-def backfill_vectors(actorlist, t, dead):
-
-    actorcount = 0
-    preycount = 0
-    predcount = 0
-    position = dead
-    plantcount = 0
-    newpath = 'vectors'
-
-    if actorlist[-1].role == 'plant':
-        newpath = 'plantvectors'
-
-    else:
-        newpath = 'vectors'
-
-    if not os.path.exists(newpath):
-        os.makedirs(newpath)
-
-    for Actor in actorlist:
-
-        if (actorlist[-1].role == Actor.role):
-
-            if actorlist[-1].role == 'predator':
-                predcount += 1
-                actorcount = predcount
-
-            elif actorlist[-1].role == 'prey':
-                preycount += 1
-                actorcount = preycount
-
-            else:
-                plantcount += 1
-                actorcount = plantcount
-
-
-    actoroutput = ('{}\\{}{}vectors.txt'.format(newpath, Actor.role, actorcount))
-
-
-
-    for i in range(0, t):
-
-        if i < t:
-            position = dead
-            position.append(dead[1])
-        else:
-            position = Actor.position
-            position.append(Actor.size / 2)
-        with open(actoroutput, 'a')as file_object:
-            for e in range(0, 3):
-                file_object.write(str(position[e]))
-                if e != 2:
-                    file_object.write(",")
-            file_object.write("\n")
-
-            del position[2]
+                    for e in range(0, 2):
+                        file_object.write(str(Actor.vectors[i][e]))
+                        file_object.write(",")
+                    if Actor.vectors[i] == dead:
+                        file_object.write(str(dead[1]))
+                    else:
+                        file_object.write(str(Actor.size / 2))
+                    file_object.write("\n")
 
 
 def output_characteristics(actorlist):
@@ -189,7 +128,11 @@ def print_outputparams(actorlist, t):
         else:
             totalplants += 1
 
-    f = open("Outputparams.txt", "w")
+    filename = "Outputparams.txt"
+    if not os.path.exists(filename):
+        os.makedirs(filename)
+
+    f = open(filename, "w")
     f.write(str(f"Duration = {t}"))
     f.write(str(f"\ntotalpreds = {totalpreds}"))
     f.write(str(f"\ntotalprey = {totalprey}"))
