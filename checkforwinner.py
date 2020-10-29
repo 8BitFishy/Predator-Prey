@@ -18,11 +18,9 @@ def checkforwinner(position, actorlist, lunge, target, role, id, parameters):
     if target == 'food':
 
         for Actor in actorlist:
-            if Actor.alive == 0:
+            if Actor.alive == 0 or Actor.role != search:
                 continue
 
-            if Actor.role != search:
-                continue
 
             else:
                 if (abs(Actor.position[0] - (position[0])) <= lunge) and (
@@ -35,10 +33,7 @@ def checkforwinner(position, actorlist, lunge, target, role, id, parameters):
 
     else:
         for Actor in actorlist:
-            if Actor.alive == 0:
-                continue
-
-            if Actor.role != search:
+            if Actor.alive == 0 or Actor.role != search or Actor.role == 'plant':
                 continue
 
             else:

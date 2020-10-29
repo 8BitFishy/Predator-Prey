@@ -57,13 +57,12 @@ if __name__ == '__main__':
 
     print(f"{predatorsleft} predators, {preyleft} prey and {plantsleft} plants")
     #print("\n\nActors generated\n\n")
-
+    log = ''
 
     #Start simulation
-    while preyleft != 0 or predatorsleft != 0:
-        log = ''
-        print(f"\nRound {t}, Frame {t*5} - {plantsleft} plants left, {preyleft} prey left, {predatorsleft} predators left", end = ", ")
-        log = log + (f"Round {t}, Frame {t * 5} - {plantsleft} plants left, {preyleft} prey left, {predatorsleft} predators left - ")
+    while predatorsleft != 0:
+        print(f"Round {t}, Frame {t*5} - {plantsleft} plants left, {preyleft} prey left, {predatorsleft} predators left", end = ", ")
+        log = log + (f"\nRound {t}, Frame {t * 5} - {plantsleft} plants left, {preyleft} prey left, {predatorsleft} predators left - ")
         predborn = preyborn = plantsgrown = 0
         predoldage = preyoldage = predstarved = preystarved = preyeaten = plantseaten = 0
         #Generate vectors for each actor
@@ -114,10 +113,10 @@ if __name__ == '__main__':
                                 if Actor.age > Actor.lifespan and Actor.role != 'plant':
                                     if Actor.role == 'prey':
                                         preyoldage += 1
-                                        log = log + f"Prey {Actor.id} dies of old age, "
+                                        log = log + f"Prey dies of old age({Actor.id}), "
                                     else:
                                         predoldage += 1
-                                        log = log + f"Predator {Actor.id} dies of old age, "
+                                        log = log + f"Predator dies of old age({Actor.id}), "
                                     Actor.causeofdeath = "old age"
                                     Actor.dying = 1
 
@@ -129,10 +128,10 @@ if __name__ == '__main__':
                                         Actor.dying = 1
                                         if Actor.role == 'prey':
                                             preystarved += 1
-                                            log = log + f"Prey {Actor.id} dies of starvation, "
+                                            log = log + f"Prey dies of starvation({Actor.id}), "
                                         else:
                                             predstarved += 1
-                                            log = log + f"Predator {Actor.id} dies of starvation, "
+                                            log = log + f"Predator dies of starvation({Actor.id}), "
 
 
 
@@ -162,7 +161,7 @@ if __name__ == '__main__':
                     if targetspotted == [0, 0]:
 
                         # assign search target. If actor hunger is less than randy threshold (i.e. has enough food), look for loooooove
-                        if Actor.fertility > fertilitythreshold and Actor.hunger <= Actor.longevity/75:
+                        if Actor.fertility > fertilitythreshold and Actor.hunger <= Actor.longevity*(75/100):
                             target = 'mate'
                             targetspotted = checkforpredators.checkforpredators(Actor.position, Actor.viewdistance, actorlist, target, Actor.role, Actor.id, parameters)
                         #if no target spotted and actor is hungry, search for food
@@ -213,7 +212,7 @@ if __name__ == '__main__':
 
                                     if actorlist[winner[1]].role == 'prey':
                                         preyeaten += 1
-                                        log = log + f"Prey {actorlist[winner[1]].id} eaten, "
+                                        log = log + f"Prey eaten({actorlist[winner[1]].id}), "
 
                                     else:
                                         plantseaten += 1
@@ -235,7 +234,7 @@ if __name__ == '__main__':
                                         actorlist[winner[1]].hunger += parameters["predmatingpenalty"]
                                         predatorsleft += 1
                                         predborn += 1
-                                        log = log + f"Predator {actorlist[-1].id} born, "
+                                        log = log + f"Predator born({actorlist[-1].id}), "
 
                                     else:
                                         Actor.sated = actorlist[winner[1]].sated = parameters["preymatingwait"]
@@ -244,7 +243,7 @@ if __name__ == '__main__':
                                         actorlist[winner[1]].hunger += parameters["preymatingpenalty"]
                                         preyleft += 1
                                         preyborn += 1
-                                        log = log + f"Prey {actorlist[-1].id} born, "
+                                        log = log + f"Prey born({actorlist[-1].id}), "
 
                             #if no target found within distance, invert target spotted to ensure movement towards target
                             else:
@@ -294,7 +293,7 @@ if __name__ == '__main__':
 
         #write vectors to vector files and increment round
         print(f"{preyborn} prey born, {preyeaten} prey eaten, {preystarved} prey starved, {preyoldage} prey died of old age, {predborn} preds born, {predstarved} preds starved, {predoldage} preds died of old age, {plantsgrown} plants grown, {plantseaten} plants eaten")
-        outputmanager.print_log(log)
+
 
         t += 1
 
@@ -318,15 +317,20 @@ if __name__ == '__main__':
             if Actor.alive == 1:
                 plantsleft += 1
 
+
+
+    #generate exit files
+    print(f"\nGenerating log")
+    outputmanager.print_log(log)
+    outputmanager.populateoutputfiles(actorlist, dead, t)
+    outputmanager.output_characteristics(actorlist)
+    print(f"\nGenerating animation parameters")
+    outputmanager.print_outputparams(actorlist, t)
+    print(f"Generating stats files")
     print(f"\n{predsleft} of {predatortotal} predators left alive")
     print(f"{preysleft} of {preytotal} prey left alive")
     print(f"{plantsleft} of {plantstotal} plants left alive")
-    print(f"\n{t} rounds played, {t*5} frames in animation")
-
-    #generate exit files
-    outputmanager.populateoutputfiles(actorlist, dead, t)
-    outputmanager.print_outputparams(actorlist, t)
-    outputmanager.output_characteristics(actorlist)
+    print(f"{t} rounds played, {t*5} frames in animation\n")
     Generate_CSV.Generate_CSV()
 
 

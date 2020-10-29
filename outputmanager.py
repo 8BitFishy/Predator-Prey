@@ -18,11 +18,16 @@ def populateoutputfiles(actorlist, dead, t):
     preycount = 0
     predcount = 0
     plantcount = 0
-
-
-
+    l = printed = 0
+    print(f"Generating vectors", end='')
     for Actor in actorlist:
 
+        if int((l/len(actorlist)) * 100) % 10 == 0 and printed == 0:
+            print(".", end = '')
+            printed = 1
+        else:
+            printed = 0
+        l += 1
         newpath = 'vectors'
 
         if Actor.role == "prey":
@@ -60,9 +65,17 @@ def output_characteristics(actorlist):
 
     newpath = 'actors'
     actorcount = preycount = predcount = plantcount = 0
-
-
+    i = printed = 0
+    print(f"\nGenerating actor characteristics files", end='')
     for Actor in actorlist:
+
+        if int((i/len(actorlist)) * 100) % 10 == 0 and printed == 0:
+            print(".", end = '')
+            printed = 1
+        else:
+            printed = 0
+
+        i += 1
 
         newpath = 'actors'
 

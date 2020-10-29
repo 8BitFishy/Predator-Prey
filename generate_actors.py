@@ -61,12 +61,11 @@ def generate_actors(groundsize, parameters):
             longevity = random.randint(parameters["predlongevity"] - 1, parameters["predlongevity"] + 1)
             lifespan = random.randint(parameters["predatorlifespan"] - 20, parameters["predatorlifespan"] + 20)
             hunger = random.randint(parameters["predlongevity"]/2 - 10, parameters["predlongevity"]/2 + 10)
-
-            walkspeed = mutation.mutation(parameters["predatorwalkspeed"] - 1, parameters["predatorwalkspeed"] + 1)
-            viewdistance = mutation.mutation(parameters["predatorviewdistance"] - 1, parameters["predatorviewdistance"] + 1)
-            longevity = mutation.mutation(parameters["predlongevity"] - 1, parameters["predlongevity"] + 1)
-            lifespan = mutation.mutation(parameters["predatorlifespan"] - 10, parameters["predatorlifespan"] + 10)
-            hunger = mutation.mutation(parameters["predlongevity"]/2 - 10, parameters["predlongevity"]/2 + 10)
+            walkspeed = random.randint(parameters["predatorwalkspeed"] - 1, parameters["predatorwalkspeed"] + 1)
+            viewdistance = random.randint(parameters["predatorviewdistance"] - 1, parameters["predatorviewdistance"] + 1)
+            longevity = random.randint(parameters["predlongevity"] - 1, parameters["predlongevity"] + 1)
+            lifespan = random.randint(parameters["predatorlifespan"] - 50, parameters["predatorlifespan"] + 50)
+            hunger = random.randint(parameters["predlongevity"]/2 - 10, parameters["predlongevity"]/2 + 10)
             role = 'predator'
             size = parameters['predatorsize']
             fertility = parameters["predfertility"]
@@ -80,11 +79,11 @@ def generate_actors(groundsize, parameters):
             longevity = random.randint(parameters["preylongevity"] - 1, parameters["preylongevity"] + 1)
             lifespan = random.randint(parameters["preylifespan"] - 20, parameters["preylifespan"] + 20)
             hunger = random.randint(parameters["preylongevity"]/2 - 10, parameters["preylongevity"]/2 + 10)
-            walkspeed = mutation.mutation(parameters["preywalkspeed"] - 1, parameters["preywalkspeed"] + 1)
-            viewdistance = mutation.mutation(parameters["preyviewdistance"] - 1, parameters["preyviewdistance"] + 1)
-            longevity = mutation.mutation(parameters["preylongevity"] - 1, parameters["preylongevity"] + 1)
-            lifespan = mutation.mutation(parameters["preylifespan"] - 50, parameters["preylifespan"] + 50)
-            hunger = mutation.mutation(parameters["preylongevity"]/2 - 10, parameters["preylongevity"]/2 + 10)
+            walkspeed = random.randint(parameters["preywalkspeed"] - 1, parameters["preywalkspeed"] + 1)
+            viewdistance = random.randint(parameters["preyviewdistance"] - 1, parameters["preyviewdistance"] + 1)
+            longevity = random.randint(parameters["preylongevity"] - 1, parameters["preylongevity"] + 1)
+            lifespan = random.randint(parameters["preylifespan"] - 50, parameters["preylifespan"] + 50)
+            hunger = random.randint(parameters["preylongevity"]/2 - 10, parameters["preylongevity"]/2 + 10)
             role = 'prey'
             size = parameters['preysize']
             fertility = parameters["preyfertility"]

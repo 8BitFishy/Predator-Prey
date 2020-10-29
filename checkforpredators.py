@@ -30,6 +30,10 @@ def checkforpredators(position, viewdistance, actorlist, target, role, id, param
         if role == 'predator' and Actor.role == 'plant':
             continue
 
+        if Actor.role == 'plant' and role != 'prey' and target != 'plant':
+            continue
+
+
         if (Actor.role == search and Actor.id != id and Actor.dying == 0):
 
             #if target is a mate, target must not be sated
