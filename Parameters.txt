@@ -1,30 +1,31 @@
 predatorsize = 5
 preysize = 3
 plantsize = 1.5
-groundsize = 50
+groundsize = 8000
 
-predatorcount = 5
-predatorlifespan = 400
+predatorcount = 100
+predatorlifespan = 600
 predatorwalkspeed = 8
-predatorviewdistance = 120
-predlongevity = 250
+predatorviewdistance = 80
+predlongevity = 420
 predmatingpenalty = 20
 predeatinggain = 120
 predmatingwait = 10
-predbornwait = 15
-predeatingwait = 5
-predfertility = 50
+predbornwait = 10
+predeatingwait = 10
+predfertility = 20
 
-preycount = 10
-preylifespan = 300
-preywalkspeed = 5
-preyviewdistance = 50
-preylongevity = 200
+preycount = 300
+preylifespan = 500
+preywalkspeed = 7
+preyviewdistance = 80
+preylongevity = 400
 preymatingpenalty = 20
-preyeatinggain = 80
-preymatingwait = 8
-preybornwait = 12
-preyeatingwait = 5
-preyfertility = 40
+preyeatinggain = 120
+preymatingwait = 3
+preybornwait = 5
+preyeatingwait = 2
+preyfertility = 10
 
-plantcount = 400
+plantcount = 2000
+
