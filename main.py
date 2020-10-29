@@ -66,7 +66,6 @@ if __name__ == '__main__':
 
         #Generate vectors for each actor
         for Actor in actorlist:
-
             # if actor is dead, move off the board
             if Actor.alive == 0:
                 Actor.position = dead
@@ -74,7 +73,6 @@ if __name__ == '__main__':
 
             # If actor is alive, update stats
             else:
-
                 #if actor is not moving this round, make relevant updates
                 if Actor.dying == 1 or Actor.sated > 0 or Actor.hunger > Actor.longevity or Actor.age > Actor.lifespan or Actor.role == 'plant':
 
@@ -139,7 +137,6 @@ if __name__ == '__main__':
 
                 #otherwise if actor is fine to move, generate movement vectors
                 else:
-
                     #reset winner and targetspotted values
                     #todo redefine 'winner' variable to more descriptive name
                     winner = [0, 0]
@@ -166,7 +163,6 @@ if __name__ == '__main__':
                         if Actor.fertility > fertilitythreshold:
                             target = 'mate'
                             targetspotted = checkforpredators.checkforpredators(Actor.position, Actor.viewdistance, actorlist, target, Actor.role, Actor.id, parameters)
-
                         #if no target spotted, search for food
                         if targetspotted == [0, 0]:
                             target = 'food'
@@ -176,7 +172,6 @@ if __name__ == '__main__':
                         if targetspotted == [0, 0]:
                             movement = weightedfreeroam.weightedfreeroam(Actor.lastmovement, Actor.walkspeed)
 
-
                     #if target found, react accordingly, output a movement vector
                     if targetspotted != [0, 0]:
 
@@ -185,10 +180,8 @@ if __name__ == '__main__':
                             # turn target vector into movement vector
                             movement = runawaaay.runawaaay(Actor.walkspeed, targetspotted)
 
-
                         #if not fleeing from predator
                         else:
-
                             #check for nearby targets, if found return list [1, X] signifying ['target found', actor number]
                             winner = checkforwinner.checkforwinner(Actor.position, actorlist, Actor.lunge, target, Actor.role, Actor.id, parameters)
 
@@ -210,7 +203,6 @@ if __name__ == '__main__':
                                     else:
                                         Actor.sated = parameters["preyeatingwait"]
                                         Actor.hunger -= parameters["preyeatinggain"]
-
                                     Actor.dying = 0
                                     Actor.enemieseaten += 1
 
@@ -231,7 +223,6 @@ if __name__ == '__main__':
                                     Actor.timesmated += 1
                                     actorlist[winner[1]].timesmated += 1
                                     Actor.fertility = actorlist[winner[1]].fertility = 0
-
                                     if Actor.role == 'predator':
                                         Actor.sated = actorlist[winner[1]].sated = parameters["predmatingwait"]
                                         actorlist[-1].sated = parameters["predbornwait"]
@@ -274,13 +265,12 @@ if __name__ == '__main__':
 
 
                 #check for wall and update movement accordingly
-                movement = overlapcheck.overlapcheck(actorlist, Actor.position, movement, Actor.role, randmax, Actor.size, Actor.id, Actor.walkspeed)
-                movement = boundarycheck.boundarycheck(targetspotted, Actor.position, movement, groundsize, randmax)
-
-                #update actor position and last movement
-                Actor.position = updateposition.updateposition(Actor.position, movement)
-                Actor.lastmovement = movement
-
+                if Actor.role != 'plant':
+                    movement = overlapcheck.overlapcheck(actorlist, Actor.position, movement, Actor.role, randmax, Actor.size, Actor.id, Actor.walkspeed)
+                    movement = boundarycheck.boundarycheck(targetspotted, Actor.position, movement, groundsize, randmax)
+                    #update actor position and last movement
+                    Actor.position = updateposition.updateposition(Actor.position, movement)
+                    Actor.lastmovement = movement
 
 
         if plantsleft < plantcount + 50:
@@ -290,12 +280,10 @@ if __name__ == '__main__':
                 actorlist = generate_actors.generateplants(actorlist, groundsize, newplants, t, dead, parameters)
                 plantsleft += newplants
 
-
         #write vectors to vector files and increment round
         outputmanager.print_log(log)
         outputmanager.populateoutputfiles(actorlist, dead)
         t += 1
-
 
 
     #Generate exit messages

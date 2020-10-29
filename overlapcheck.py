@@ -28,7 +28,7 @@ def overlapcheck(actorlist, position, movement, role, randmax, size, id, walkspe
 
 
 
-                    while Actor.position[0] - (position[0] + movement[0]) <= (size) and Actor.position[1] - (position[1] + movement[1]) <= size and stuck <= 10:
+                    while Actor.position[0] - (position[0] + movement[0]) <= (size) and Actor.position[1] - (position[1] + movement[1]) <= size and stuck < 10:
 
                         randoverflow = random.randint(1, randmax)
 

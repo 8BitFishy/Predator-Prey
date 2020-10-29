@@ -1,11 +1,8 @@
-<<<<<<< HEAD
 Duration = 719
 totalpreds = 441
 totalprey = 876
 totalplants = 8649
-=======
 Duration = 808
 totalpreds = 162
 totalprey = 941
 totalplants = 2786
->>>>>>> 831ee0a9a11af0c61e85ba3c5e0aa323ea6538ad
