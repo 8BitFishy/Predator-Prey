@@ -24,6 +24,11 @@ def checkforpredators(position, viewdistance, actorlist, target, role, id, param
         search == 'predator'
 
     for Actor in actorlist:
+        if Actor.alive == 0:
+            continue
+
+        if role == 'predator' and Actor.role == 'plant':
+            continue
 
         if (Actor.role == search and Actor.id != id and Actor.dying == 0):
 

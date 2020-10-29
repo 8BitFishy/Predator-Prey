@@ -212,17 +212,17 @@ if __name__ == '__main__':
                                     Actor.dying = 0
                                     Actor.enemieseaten += 1
 
-                                    if actorlist[winner[1]].role == 'plant':
-                                        print("Plant eaten", end = ", ")
-                                        log = log + "Plant eaten, "
-
-                                    else:
-                                        print("Prey eaten", end = ", ")
+                                    if actorlist[winner[1]].role == 'prey':
                                         log = log + f"Prey {actorlist[winner[1]].id} eaten, "
+                                        print("Prey eaten", end = ", ")
+
+                                    #else:
+                                        #print("Plant eaten", end = ", ")
+                                        #log = log + "Plant eaten, "
 
                                 #else if target is mate, generate new actor from parents. Backfill baby vectors. Perform appropriate updates
                                 else:
-                                    #print(f"Actor{Actor.id} mates with {actorlist[winner[1]].id}")
+                                    # print(f"Actor{Actor.id} mates with {actorlist[winner[1]].id}")
                                     actorlist = generate_actors.createnewactor(actorlist, Actor.id, actorlist[winner[1]].id, parameters, t)
                                     #print(f"Actor{actorlist[len(actorlist)-1].id} born in role {actorlist[len(actorlist)-1].role}")
                                     outputmanager.backfill_vectors(actorlist, t, dead)
