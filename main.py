@@ -135,6 +135,8 @@ if __name__ == '__main__':
 
 
 
+
+
                 #otherwise if actor is fine to move, generate movement vectors
                 else:
 

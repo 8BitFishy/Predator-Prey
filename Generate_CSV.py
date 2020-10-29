@@ -73,7 +73,8 @@ if __name__ == '__main__':
             actorlist.append(Actor)
 
 
-
+    predeaten = predstarved = predold = 0
+    preyeaten = preystarved = preyold = 0
     preylongestlifeactor = 0
     predlongestlifeactor = 0
     preyfastestactor = 0
@@ -112,6 +113,14 @@ if __name__ == '__main__':
                 predmostlongevityactor = Actor.id
                 predlongevist = Actor.longevity
 
+            if Actor.causeofdeath == 1:
+                predeaten += 1
+            elif Actor.causeofdeath == 2:
+                predstarved += 1
+            elif Actor.causeofdeath == 3:
+                predold += 1
+
+
         else:
 
             if Actor.walkspeed > preyfastest:
@@ -134,6 +143,12 @@ if __name__ == '__main__':
                 preymostlongevityactor = Actor.id
                 preylongevist = Actor.longevity
 
+            if Actor.causeofdeath == 1:
+                preyeaten += 1
+            elif Actor.causeofdeath == 2:
+                preystarved += 1
+            elif Actor.causeofdeath == 3:
+                preyold += 1
 
 
 
@@ -152,8 +167,18 @@ if __name__ == '__main__':
     print(f"Predator with most longevity = {predmostlongevityactor} at {predlongevist} rounds")
     print(f"Prey with most longevity = {preymostlongevityactor} at {preylongevist} rounds")
 
+    print(f"Predators eaten = {predeaten}")
+    print(f"Predators died of starvation = {predstarved}")
+    print(f"Predators died of old age = {predold}")
+
+    print(f"Prey eaten = {preyeaten}")
+    print(f"Prey died of starvation = {preystarved}")
+    print(f"Prey died of old age = {preyold}")
+
+
+
     # field names
-    fields = ['Round', 'Predator Pop', 'Prey Pop', 'av_predlifespan', 'av_preylifespan', 'av_predwalkspeed', 'av_preywalkspeed', 'av_predviewdistance', 'av_preyviewdistance']
+    fields = ['Round', 'Predator Pop', 'Prey Pop', 'predstarved', 'predold', 'preyeaten', 'preystarved', 'preyold', 'av_predlifespan', 'av_preylifespan', 'av_predage', 'av_preyage',  'av_predwalkspeed', 'av_preywalkspeed', 'av_predviewdistance', 'av_preyviewdistance']
 
     # name of csv file
     filename = "stats.csv"
@@ -168,7 +193,8 @@ if __name__ == '__main__':
         csvwriter.writerow(fields)
 
         predpop = preypop = 0
-
+        predeaten = predstarved = predold = 0
+        preyeaten = preystarved = preyold = 0
 
         for i in range(duration):
             row = []
@@ -178,6 +204,8 @@ if __name__ == '__main__':
             av_preyviewdistance = 0
             av_predlifespan = 0
             av_preylifespan = 0
+            av_predage = 0
+            av_preyage = 0
 
             for Actor in actorlist:
 
@@ -201,11 +229,21 @@ if __name__ == '__main__':
                     if Actor.death == i:
                         if 'predator' in Actor.role:
                             predpop -= 1
-
+                            if Actor.causeofdeath == 1:
+                                predeaten += 1
+                            elif Actor.causeofdeath == 2:
+                                predstarved += 1
+                            elif Actor.causeofdeath == 3:
+                                predold += 1
 
                         else:
                             preypop -= 1
-
+                            if Actor.causeofdeath == 1:
+                                preyeaten += 1
+                            elif Actor.causeofdeath == 2:
+                                preystarved += 1
+                            elif Actor.causeofdeath == 3:
+                                preyold += 1
 
                     elif i > Actor.birth or i < Actor.death:
 
@@ -214,36 +252,42 @@ if __name__ == '__main__':
                             av_predwalkspeed += Actor.walkspeed
                             av_predviewdistance += Actor.viewdistance
                             av_predlifespan += Actor.lifespan
+                            av_predage += Actor.age
+
 
                         else:
 
                             av_preywalkspeed += Actor.walkspeed
                             av_preyviewdistance += Actor.viewdistance
                             av_preylifespan += Actor.lifespan
+                            av_preyage += Actor.age
 
 
             if predpop == 0:
                 av_predlifespan = 0
                 av_predviewdistance = 0
                 av_predwalkspeed = 0
-
+                av_predage = 0
             else:
                 av_predlifespan = av_predlifespan / predpop
                 av_predviewdistance = av_predviewdistance / predpop
                 av_predwalkspeed = av_predwalkspeed / predpop
+                av_predage = av_predage / predpop
+
 
             if preypop == 0:
                 av_preylifespan = 0
                 av_preyviewdistance = 0
                 av_preywalkspeed = 0
+                av_preyage = 0
 
             else:
                 av_preylifespan = av_preylifespan / preypop
                 av_preyviewdistance = av_preyviewdistance / preypop
                 av_preywalkspeed = av_preywalkspeed / preypop
+                av_preyage = av_preyage / preypop
 
-
-            row = [i, predpop, preypop, av_predlifespan, av_preylifespan, av_predwalkspeed, av_preywalkspeed, av_predviewdistance, av_preyviewdistance]
+            row = [i, predpop, preypop, predstarved, predold, preyeaten, preystarved, preyold, av_predlifespan, av_preylifespan, av_predage, av_preyage, av_predwalkspeed, av_preywalkspeed, av_predviewdistance, av_preyviewdistance]
 
             csvwriter.writerow(row)
 
