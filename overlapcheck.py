@@ -1,10 +1,10 @@
 import random
 
-def overlapcheck(actorlist, position, movement, role, randmax, size, id, walkspeed):
+def overlapcheck(livingactors, position, movement, role, randmax, size, id, walkspeed):
     doublecheck = 0
     stuck = 0
     while doublecheck < 2:
-        for Actor in actorlist:
+        for Actor in livingactors:
             if Actor.role == 'plant' or Actor.alive == 0:
                 continue
 

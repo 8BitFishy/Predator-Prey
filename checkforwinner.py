@@ -1,6 +1,6 @@
 import relationcheck
 
-def checkforwinner(position, actorlist, lunge, target, role, id, parameters):
+def checkforwinner(position, livingactors, lunge, target, role, id, parameters, index):
 
 
 
@@ -17,7 +17,7 @@ def checkforwinner(position, actorlist, lunge, target, role, id, parameters):
 
     if target == 'food':
 
-        for Actor in actorlist:
+        for Actor in livingactors:
             if Actor.alive == 0 or Actor.role != search:
                 continue
 
@@ -25,21 +25,22 @@ def checkforwinner(position, actorlist, lunge, target, role, id, parameters):
             else:
                 if (abs(Actor.position[0] - (position[0])) <= lunge) and (
                         abs(Actor.position[1] - (position[1])) <= lunge) and Actor.dying == 0 and Actor.id != id:
-                    winner = [1, Actor.id]
+                    winner = [1, Actor.index]
                     return winner
 
                 else:
                     winner = [0, 0]
 
     else:
-        for Actor in actorlist:
+        for Actor in livingactors:
             if Actor.alive == 0 or Actor.role != search or Actor.role == 'plant':
                 continue
 
             else:
-                if (abs(Actor.position[0] - (position[0])) <= lunge) and (abs(Actor.position[1] - (position[1])) <= lunge) and Actor.dying == 0 and Actor.id != id:
-                    if relationcheck.relationcheck(id, Actor.id, actorlist, parameters):
-                        winner = [1, Actor.id]
+                if (abs(Actor.position[0] - (position[0])) <= lunge) and (abs(Actor.position[1] - (position[1])) <= lunge) and Actor.dying == 0 and Actor.index != index:
+                    if relationcheck.relationcheck(index, Actor.index, livingactors, parameters):
+
+                        winner = [1, Actor.index]
                         return winner
                     else:
                         winner = [0, 0]

@@ -17,6 +17,7 @@ import Generate_CSV
 parameters = {}
 duration = 0
 actorlist = []
+livingactors = []
 dead = [9000, 9000]
 predatorsleft = 0
 preyleft = 0
@@ -46,8 +47,9 @@ if __name__ == '__main__':
     #Generate starting actors and fill out population count
     actorlist = generate_actors.generate_actors(groundsize, parameters)
     actorlist = generate_actors.generateplants(actorlist, groundsize, plantcount, t, dead, parameters)
+    livingactors = actorlist.copy()
 
-    for Actor in actorlist:
+    for Actor in livingactors:
         if Actor.role == 'predator':
             predatorsleft += 1
         elif Actor.role == 'prey':
@@ -61,13 +63,21 @@ if __name__ == '__main__':
 
     #Start simulation
     while predatorsleft != 0:
-        print(f"Round {t}, Frame {t*5} - {plantsleft} plants left, {preyleft} prey left, {predatorsleft} predators left - ", end = ", ")
-        log = log + (f"\nRound {t}, Frame {t * 5} - {plantsleft} plants left, {preyleft} prey left, {predatorsleft} predators left - ")
+
+        livingactors = [Actor for Actor in livingactors if Actor.alive == 1]
+        for i in range(len(livingactors)):
+            livingactors[i].index = i
+
+        print(f"Round {t} - {len(livingactors)} total creatures, {plantsleft} plants left, {preyleft} prey left, {predatorsleft} predators left - ", end = "")
+        log = log + (f"\nRound {t}, Frame {t * 5} - {len(livingactors)} total creatures, {plantsleft} plants left, {preyleft} prey left, {predatorsleft} predators left - ")
+
+
         predborn = preyborn = plantsgrown = 0
         predoldage = preyoldage = predstarved = preystarved = preyeaten = plantseaten = 0
-        #Generate vectors for each actor
-        for Actor in actorlist:
 
+
+        #Generate vectors for each actor
+        for Actor in livingactors:
             # if actor is dead, move off the board
             if Actor.alive == 0:
                 Actor.position = dead
@@ -123,7 +133,6 @@ if __name__ == '__main__':
                                 else:
                                     #if actor is starving to death set state to dying
                                     if Actor.hunger > Actor.longevity and Actor.role != 'plant':
-                                        #print(f"Actor{Actor.id} dies of starvation")
                                         Actor.causeofdeath = "starvation"
                                         Actor.dying = 1
                                         if Actor.role == 'prey':
@@ -155,15 +164,16 @@ if __name__ == '__main__':
                         direction = 'flee'
                         fertilitythreshold = parameters["preyfertility"]
                         #todo refactor 'checkforpredators' to more accurate name
-                        targetspotted = checkforpredators.checkforpredators(Actor.position, Actor.viewdistance, actorlist, target, Actor.role, Actor.id, parameters)
+
+                        targetspotted = checkforpredators.checkforpredators(Actor.position, Actor.viewdistance, livingactors, target, Actor.role, Actor.id, parameters, Actor.index)
 
                     #if no enemigo found, search for mate or food
                     if targetspotted == [0, 0]:
 
                         # assign search target. If actor hunger is less than randy threshold (i.e. has enough food), look for loooooove
-                        if Actor.fertility > fertilitythreshold and Actor.hunger <= Actor.longevity*(50/100):
+                        if Actor.fertility > fertilitythreshold and Actor.hunger <= Actor.longevity*(45/100):
                             target = 'mate'
-                            targetspotted = checkforpredators.checkforpredators(Actor.position, Actor.viewdistance, actorlist, target, Actor.role, Actor.id, parameters)
+                            targetspotted = checkforpredators.checkforpredators(Actor.position, Actor.viewdistance, livingactors, target, Actor.role, Actor.id, parameters, Actor.index)
 
 
                         #if no target spotted and actor is hungry, search for food
@@ -175,7 +185,7 @@ if __name__ == '__main__':
                             else:
                                 target = 'food'
                                 targetspotted = checkforpredators.checkforpredators(Actor.position, Actor.viewdistance,
-                                                                                actorlist, target, Actor.role, Actor.id,parameters)
+                                                                                livingactors, target, Actor.role, Actor.id,parameters, Actor.index)
 
                         # if still no target spotted, freeroam
                         if targetspotted == [0, 0]:
@@ -192,20 +202,18 @@ if __name__ == '__main__':
                         #if not fleeing from predator
                         else:
                             #check for nearby targets, if found return list [1, X] signifying ['target found', actor number]
-                            winner = checkforwinner.checkforwinner(Actor.position, actorlist, Actor.lunge, target, Actor.role, Actor.id, parameters)
-
+                            winner = checkforwinner.checkforwinner(Actor.position, livingactors, Actor.lunge, target, Actor.role, Actor.index, parameters, Actor.index)
                             #if target within lunge distance is found, move to target position and perform appropriate action
                             if winner[0] == 1:
                                 for i in range(2):
-                                    movement[i] = actorlist[winner[1]].position[i] - Actor.position[i]
+                                    movement[i] = livingactors[winner[1]].position[i] - Actor.position[i]
 
                                 #if target is food, eat food
                                 if target == 'food':
 
                                     #set food state to dying, set actor state to sated (wait for digestion), decrease hunger value, remove 'dying' state and add characteristics info
-                                    #print(f"Actor{Actor.id} in role {Actor.role} eats actor{actorlist[winner[1]].id}")
-                                    actorlist[winner[1]].dying = 1
-                                    actorlist[winner[1]].causeofdeath = f"eaten by actor {Actor.id}"
+                                    livingactors[winner[1]].dying = 1
+                                    livingactors[winner[1]].causeofdeath = f"eaten by actor {Actor.id}"
                                     if Actor.role == 'predator':
                                         Actor.sated = parameters["predeatingwait"]
                                         Actor.hunger -= parameters["predeatinggain"]
@@ -215,9 +223,9 @@ if __name__ == '__main__':
                                     Actor.dying = 0
                                     Actor.enemieseaten += 1
 
-                                    if actorlist[winner[1]].role == 'prey':
+                                    if livingactors[winner[1]].role == 'prey':
                                         preyeaten += 1
-                                        log = log + f"Prey eaten({actorlist[winner[1]].id}), "
+                                        log = log + f"Prey eaten({livingactors[winner[1]].id}), "
 
                                     else:
                                         plantseaten += 1
@@ -226,29 +234,27 @@ if __name__ == '__main__':
 
                                 #else if target is mate, generate new actor from parents. Backfill baby vectors. Perform appropriate updates
                                 else:
-                                    # print(f"Actor{Actor.id} mates with {actorlist[winner[1]].id}")
-                                    actorlist = generate_actors.createnewactor(actorlist, Actor.id, actorlist[winner[1]].id, parameters, t, dead)
-                                    #print(f"Actor{actorlist[len(actorlist)-1].id} born in role {actorlist[len(actorlist)-1].role}")
+                                    livingactors = generate_actors.createnewactor(livingactors, Actor.index, livingactors[winner[1]].index, parameters, t, dead)
                                     Actor.timesmated += 1
-                                    actorlist[winner[1]].timesmated += 1
-                                    Actor.fertility = actorlist[winner[1]].fertility = 0
+                                    livingactors[winner[1]].timesmated += 1
+                                    Actor.fertility = livingactors[winner[1]].fertility = 0
                                     if Actor.role == 'predator':
-                                        Actor.sated = actorlist[winner[1]].sated = parameters["predmatingwait"]
-                                        actorlist[-1].sated = parameters["predbornwait"]
+                                        Actor.sated = livingactors[winner[1]].sated = parameters["predmatingwait"]
+                                        livingactors[-1].sated = parameters["predbornwait"]
                                         Actor.hunger += parameters["predmatingpenalty"]
-                                        actorlist[winner[1]].hunger += parameters["predmatingpenalty"]
+                                        livingactors[winner[1]].hunger += parameters["predmatingpenalty"]
                                         predatorsleft += 1
                                         predborn += 1
-                                        log = log + f"Predator born({actorlist[-1].id}), "
+                                        log = log + f"Predator born({livingactors[-1].id}), "
 
                                     else:
-                                        Actor.sated = actorlist[winner[1]].sated = parameters["preymatingwait"]
-                                        actorlist[-1].sated = parameters["preybornwait"]
+                                        Actor.sated = livingactors[winner[1]].sated = parameters["preymatingwait"]
+                                        livingactors[-1].sated = parameters["preybornwait"]
                                         Actor.hunger += parameters["preymatingpenalty"]
-                                        actorlist[winner[1]].hunger += parameters["preymatingpenalty"]
+                                        livingactors[winner[1]].hunger += parameters["preymatingpenalty"]
                                         preyleft += 1
                                         preyborn += 1
-                                        log = log + f"Prey born({actorlist[-1].id}), "
+                                        log = log + f"Prey born({livingactors[-1].id}), "
 
                             #if no target found within distance, invert target spotted to ensure movement towards target
                             else:
@@ -275,7 +281,7 @@ if __name__ == '__main__':
 
                 #check for wall and update movement accordingly
                 if Actor.role != 'plant':
-                    movement = overlapcheck.overlapcheck(actorlist, Actor.position, movement, Actor.role, randmax, Actor.size, Actor.id, Actor.walkspeed)
+                    movement = overlapcheck.overlapcheck(livingactors, Actor.position, movement, Actor.role, randmax, Actor.size, Actor.id, Actor.walkspeed)
                     movement = boundarycheck.boundarycheck(targetspotted, Actor.position, movement, groundsize, randmax)
                     #update actor position and last movement
                     Actor.lastmovement = movement
@@ -293,11 +299,15 @@ if __name__ == '__main__':
             if growplants > 85:
                 newplants = random.randint(1, groundsize / 50)
                 plantsgrown = newplants
-                actorlist = generate_actors.generateplants(actorlist, groundsize, newplants, t, dead, parameters)
+                livingactors = generate_actors.generateplants(livingactors, groundsize, newplants, t, dead, parameters)
                 plantsleft += newplants
 
         #write vectors to vector files and increment round
         print(f"{preyborn} prey born, {preyeaten} prey eaten, {preystarved} prey starved, {preyoldage} prey died of old age, {predborn} preds born, {predstarved} preds starved, {predoldage} preds died of old age, {plantsgrown} plants grown, {plantseaten} plants eaten")
+
+        for Actor in livingactors:
+            if Actor not in actorlist:
+                actorlist.append(Actor)
 
 
         t += 1

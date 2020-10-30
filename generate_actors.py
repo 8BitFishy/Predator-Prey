@@ -7,7 +7,7 @@ from itertools import count
 class Actors:
     _ids = count(0)
 
-    def __init__(self, role, size, position, walkspeed, viewdistance, hunger, longevity, birth, death, lifespan, parent1, parent2, fertility, vectors):
+    def __init__(self, role, size, position, walkspeed, viewdistance, hunger, longevity, birth, death, lifespan, parent1, parent2, fertility, vectors, index):
         self.id = next(self._ids)
         self.role = role
         self.size = size
@@ -32,6 +32,7 @@ class Actors:
         self.enemieseaten = 0
         self.fertility = fertility
         self.vectors = vectors
+        self.index = index
 
 def generate_actors(groundsize, parameters):
     plantcount = parameters["plantcount"]
@@ -68,7 +69,7 @@ def generate_actors(groundsize, parameters):
             hunger = random.randint(parameters["predlongevity"]/2 - 10, parameters["predlongevity"]/2 + 10)
             role = 'predator'
             size = parameters['predatorsize']
-            fertility = parameters["predfertility"]
+
 
             for j in range(0, 2):
                 position[j] = random.randint(int(-groundsize/2), int(groundsize/2))
@@ -86,15 +87,16 @@ def generate_actors(groundsize, parameters):
             hunger = random.randint(parameters["preylongevity"]/2 - 10, parameters["preylongevity"]/2 + 10)
             role = 'prey'
             size = parameters['preysize']
-            fertility = parameters["preyfertility"]
+
 
             for j in range(0, 2):
                 position[j] = random.randint(int(-groundsize/2), int(groundsize/2))
 
         vectors = [[position[0], position[1]]]
+        fertility = 0
 
         # Create actors and print out list
-        Actor = Actors(role, size, position, walkspeed, viewdistance, hunger, longevity, birth, death, lifespan, parent1, parent2, fertility, vectors)
+        Actor = Actors(role, size, position, walkspeed, viewdistance, hunger, longevity, birth, death, lifespan, parent1, parent2, fertility, vectors, i)
         actorlist.append(Actor)
 
 
@@ -104,21 +106,21 @@ def generate_actors(groundsize, parameters):
 
 
 
-def createnewactor(actorlist, parent1, parent2, parameters, t, dead):
+def createnewactor(livingactors, parent1, parent2, parameters, t, dead):
 
         position = [0, 0]
         birth = t
         death = -1
 
         for j in range(0, 2):
-            position[j] = int((actorlist[parent1].position[j] + actorlist[parent2].position[j])/2)
+            position[j] = int((livingactors[parent1].position[j] + livingactors[parent2].position[j])/2)
 
-        walkspeed = mutation.mutation(actorlist[parent1].walkspeed, actorlist[parent2].walkspeed)
-        viewdistance = mutation.mutation(actorlist[parent1].viewdistance, actorlist[parent2].viewdistance)
-        longevity = mutation.mutation(actorlist[parent1].longevity, actorlist[parent2].longevity)
-        lifespan = mutation.mutation(actorlist[parent1].lifespan, actorlist[parent2].lifespan)
-        role = actorlist[parent1].role
-        size = actorlist[parent1].size
+        walkspeed = mutation.mutation(livingactors[parent1].walkspeed, livingactors[parent2].walkspeed)
+        viewdistance = mutation.mutation(livingactors[parent1].viewdistance, livingactors[parent2].viewdistance)
+        longevity = mutation.mutation(livingactors[parent1].longevity, livingactors[parent2].longevity)
+        lifespan = mutation.mutation(livingactors[parent1].lifespan, livingactors[parent2].lifespan)
+        role = livingactors[parent1].role
+        size = livingactors[parent1].size
         fertility = 0
         hunger = longevity/2
         vectors = [[dead[0], dead[1]]]
@@ -127,17 +129,19 @@ def createnewactor(actorlist, parent1, parent2, parameters, t, dead):
             vectors.append([dead[0], dead[1]])
         vectors.append([position[0], position[1]])
 
+
+
         # Create actors and print out list
-        Actor = Actors(role, size, position, walkspeed, viewdistance, hunger, longevity, birth, death, lifespan, parent1, parent2, fertility, vectors)
-        actorlist.append(Actor)
+        Actor = Actors(role, size, position, walkspeed, viewdistance, hunger, longevity, birth, death, lifespan, livingactors[parent1].id, livingactors[parent2].id, fertility, vectors, len(livingactors))
+        livingactors.append(Actor)
 
 
 
 
-        return(actorlist)
+        return(livingactors)
 
 
-def generateplants(actorlist, groundsize, plantcount, t, dead, parameters):
+def generateplants(livingactors, groundsize, plantcount, t, dead, parameters):
 
     for i in range(plantcount):
 
@@ -169,7 +173,7 @@ def generateplants(actorlist, groundsize, plantcount, t, dead, parameters):
 
         vectors.append([position[0], position[1]])
 
-        Actor = Actors(role, size, position, walkspeed, viewdistance, hunger, longevity, birth, death, lifespan, parent1, parent2, fertility, vectors)
-        actorlist.append(Actor)
+        Actor = Actors(role, size, position, walkspeed, viewdistance, hunger, longevity, birth, death, lifespan, parent1, parent2, fertility, vectors, len(livingactors))
+        livingactors.append(Actor)
 
-    return(actorlist)
+    return(livingactors)

@@ -20,6 +20,7 @@ def populateoutputfiles(actorlist, dead, t):
     plantcount = 0
     l = printed = 0
     print(f"Generating vectors", end='')
+
     for Actor in actorlist:
 
         if int((l/len(actorlist)) * 100) % 10 == 0 and printed == 0:
@@ -28,6 +29,11 @@ def populateoutputfiles(actorlist, dead, t):
         else:
             printed = 0
         l += 1
+
+        while len(Actor.vectors) < t:
+            Actor.vectors.append(dead)
+
+
         newpath = 'vectors'
 
         if Actor.role == "prey":
