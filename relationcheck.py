@@ -9,7 +9,7 @@ def relationcheck(actor1, actor2, actorlist, parameters):
         if actorlist[actor2].sated < 5:
 
             #if actors are not starving to death
-            if actorlist[actor2].hunger <= actorlist[actor2].longevity*(75/100):
+            if actorlist[actor2].hunger <= actorlist[actor2].longevity*(50/100):
 
                 # if actor 2 is infertile - no match
                 if actorlist[actor1].role == 'predator':

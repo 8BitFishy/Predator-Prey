@@ -61,7 +61,7 @@ if __name__ == '__main__':
 
     #Start simulation
     while predatorsleft != 0:
-        print(f"Round {t}, Frame {t*5} - {plantsleft} plants left, {preyleft} prey left, {predatorsleft} predators left", end = ", ")
+        print(f"Round {t}, Frame {t*5} - {plantsleft} plants left, {preyleft} prey left, {predatorsleft} predators left - ", end = ", ")
         log = log + (f"\nRound {t}, Frame {t * 5} - {plantsleft} plants left, {preyleft} prey left, {predatorsleft} predators left - ")
         predborn = preyborn = plantsgrown = 0
         predoldage = preyoldage = predstarved = preystarved = preyeaten = plantseaten = 0
@@ -161,18 +161,23 @@ if __name__ == '__main__':
                     if targetspotted == [0, 0]:
 
                         # assign search target. If actor hunger is less than randy threshold (i.e. has enough food), look for loooooove
-                        if Actor.fertility > fertilitythreshold and Actor.hunger <= Actor.longevity*(75/100):
+                        if Actor.fertility > fertilitythreshold and Actor.hunger <= Actor.longevity*(50/100):
                             target = 'mate'
                             targetspotted = checkforpredators.checkforpredators(Actor.position, Actor.viewdistance, actorlist, target, Actor.role, Actor.id, parameters)
+
+
                         #if no target spotted and actor is hungry, search for food
                         if targetspotted == [0, 0]:
-                            if Actor.hunger <= Actor.longevity/20:
+                            #if Actor is not hungry, freeroam
+                            if Actor.hunger <= Actor.longevity*0.2:
                                 targetspotted = [0, 0]
+                            #otherwise look for food
                             else:
                                 target = 'food'
                                 targetspotted = checkforpredators.checkforpredators(Actor.position, Actor.viewdistance,
                                                                                 actorlist, target, Actor.role, Actor.id,parameters)
-                        # if still no target spotted,freeroam
+
+                        # if still no target spotted, freeroam
                         if targetspotted == [0, 0]:
                             movement = weightedfreeroam.weightedfreeroam(Actor.lastmovement, Actor.walkspeed)
 
