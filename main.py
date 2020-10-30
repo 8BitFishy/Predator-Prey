@@ -63,8 +63,7 @@ if __name__ == '__main__':
     log = ''
 
     #Start simulation
-    while t < 20:
-    #while predatorsleft != 0:
+    while predatorsleft != 0:
         livingactors = [Actor for Actor in livingactors if Actor.alive == 1]
         for i in range(len(livingactors)):
             livingactors[i].index = i
@@ -241,28 +240,46 @@ if __name__ == '__main__':
 
                                 #else if target is mate, generate new actor from parents. Backfill baby vectors. Perform appropriate updates
                                 else:
+                                    littersize = 0
+                                    litterchance = random.randint(0, 100)
+                                    if litterchance < 75:
+                                        littersize = 1
+                                    elif litterchance >= 75 and litterchance < 90:
+                                        littersize = 2
+                                    elif litterchance >= 90 and litterchance < 97:
+                                        littersize = 3
+                                    else:
+                                        littersize = 4
 
-                                    livingactors = generate_actors.createnewactor(livingactors, actorsinview, Actor.index, actorsinview[winner[1]].index, parameters, t, dead)
+                                    for i in range(littersize):
+                                        livingactors = generate_actors.createnewactor(livingactors, actorsinview, Actor.index, actorsinview[winner[1]].index, parameters, t, dead)
+                                        if Actor.role == 'predator':
+                                            livingactors[-1].sated = parameters["predbornwait"]
+                                            log = log + f"Predator born({livingactors[-1].id}), "
+                                            predatorsleft += 1
+                                            predborn += 1
+                                        else:
+                                            livingactors[-1].sated = parameters["preybornwait"]
+                                            log = log + f"Prey born({livingactors[-1].id}), "
+                                            preyleft += 1
+                                            preyborn += 1
+
                                     Actor.timesmated += 1
                                     actorsinview[winner[1]].timesmated += 1
                                     Actor.fertility = actorsinview[winner[1]].fertility = 0
+
                                     if Actor.role == 'predator':
                                         Actor.sated = actorsinview[winner[1]].sated = parameters["predmatingwait"]
-                                        actorsinview[-1].sated = parameters["predbornwait"]
                                         Actor.hunger += parameters["predmatingpenalty"]
                                         actorsinview[winner[1]].hunger += parameters["predmatingpenalty"]
-                                        predatorsleft += 1
-                                        predborn += 1
-                                        log = log + f"Predator born({actorsinview[-1].id}), "
+
 
                                     else:
                                         Actor.sated = actorsinview[winner[1]].sated = parameters["preymatingwait"]
-                                        actorsinview[-1].sated = parameters["preybornwait"]
                                         Actor.hunger += parameters["preymatingpenalty"]
                                         actorsinview[winner[1]].hunger += parameters["preymatingpenalty"]
-                                        preyleft += 1
-                                        preyborn += 1
-                                        log = log + f"Prey born({actorsinview[-1].id}), "
+
+
 
                             #if no target found within distance, invert target spotted to ensure movement towards target
                             else:
@@ -301,9 +318,9 @@ if __name__ == '__main__':
 
 
 
-        if plantsleft < plantcount:
+        if plantsleft < plantcount/2:
             growplants = random.randint(0, 100)
-            if growplants > 85:
+            if growplants > 90:
                 newplants = random.randint(1, groundsize / 50)
                 plantsgrown = newplants
                 livingactors = generate_actors.generateplants(livingactors, groundsize, newplants, t, dead, parameters)

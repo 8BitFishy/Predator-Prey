@@ -247,6 +247,7 @@ def Generate_CSV():
 
                 else:
 
+
                     if Actor.birth == i:
 
                         if 'predator' in Actor.role:
@@ -282,7 +283,10 @@ def Generate_CSV():
                             av_predwalkspeed += Actor.walkspeed
                             av_predviewdistance += Actor.viewdistance
                             av_predlifespan += Actor.lifespan
-                            av_predage += Actor.age
+                            if Actor.birth == 0:
+                                av_predage += Actor.age
+                            else:
+                                av_predage += (i - Actor.birth)
 
 
                         else:
@@ -290,7 +294,10 @@ def Generate_CSV():
                             av_preywalkspeed += Actor.walkspeed
                             av_preyviewdistance += Actor.viewdistance
                             av_preylifespan += Actor.lifespan
-                            av_preyage += Actor.age
+                            if Actor.birth == 0:
+                                av_preyage += Actor.age
+                            else:
+                                av_preyage += (i - Actor.birth)
 
 
             if predpop == 0:
