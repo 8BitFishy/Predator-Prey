@@ -6,7 +6,6 @@ def boundarycheck(predatorspotted, position, movement, groundsize, randmax):
     pathfound = 0
 
     while True:
-
         if abs(position[0] + movement[0]) > groundsize / 2:
 
             if position[0] <= 0:

@@ -106,21 +106,21 @@ def generate_actors(groundsize, parameters):
 
 
 
-def createnewactor(livingactors, parent1, parent2, parameters, t, dead):
+def createnewactor(livingactors, actorsinview, parent1, parent2, parameters, t, dead):
 
         position = [0, 0]
         birth = t
         death = -1
 
         for j in range(0, 2):
-            position[j] = int((livingactors[parent1].position[j] + livingactors[parent2].position[j])/2)
+            position[j] = int((actorsinview[parent1].position[j] + actorsinview[parent2].position[j])/2)
 
-        walkspeed = mutation.mutation(livingactors[parent1].walkspeed, livingactors[parent2].walkspeed)
-        viewdistance = mutation.mutation(livingactors[parent1].viewdistance, livingactors[parent2].viewdistance)
-        longevity = mutation.mutation(livingactors[parent1].longevity, livingactors[parent2].longevity)
-        lifespan = mutation.mutation(livingactors[parent1].lifespan, livingactors[parent2].lifespan)
-        role = livingactors[parent1].role
-        size = livingactors[parent1].size
+        walkspeed = mutation.mutation(actorsinview[parent1].walkspeed, actorsinview[parent2].walkspeed)
+        viewdistance = mutation.mutation(actorsinview[parent1].viewdistance, actorsinview[parent2].viewdistance)
+        longevity = mutation.mutation(actorsinview[parent1].longevity, actorsinview[parent2].longevity)
+        lifespan = mutation.mutation(actorsinview[parent1].lifespan, actorsinview[parent2].lifespan)
+        role = actorsinview[parent1].role
+        size = actorsinview[parent1].size
         fertility = 0
         hunger = longevity/2
         vectors = [[dead[0], dead[1]]]
@@ -132,7 +132,7 @@ def createnewactor(livingactors, parent1, parent2, parameters, t, dead):
 
 
         # Create actors and print out list
-        Actor = Actors(role, size, position, walkspeed, viewdistance, hunger, longevity, birth, death, lifespan, livingactors[parent1].id, livingactors[parent2].id, fertility, vectors, len(livingactors))
+        Actor = Actors(role, size, position, walkspeed, viewdistance, hunger, longevity, birth, death, lifespan, actorsinview[parent1].id, actorsinview[parent2].id, fertility, vectors, len(livingactors))
         livingactors.append(Actor)
 
 

@@ -33,11 +33,13 @@ def checkforwinner(position, livingactors, lunge, target, role, id, parameters, 
 
     else:
         for Actor in livingactors:
+
             if Actor.alive == 0 or Actor.role != search or Actor.role == 'plant':
                 continue
 
             else:
                 if (abs(Actor.position[0] - (position[0])) <= lunge) and (abs(Actor.position[1] - (position[1])) <= lunge) and Actor.dying == 0 and Actor.index != index:
+
                     if relationcheck.relationcheck(index, Actor.index, livingactors, parameters):
 
                         winner = [1, Actor.index]

@@ -1,6 +1,6 @@
 import relationcheck
 
-def checkforpredators(position, viewdistance, livingactors, target, role, id, parameters, index):
+def checkforpredators(position, viewdistance, actorsinview, target, role, id, parameters, index):
     moveaway = [0, 0]
     closest = [viewdistance, viewdistance]
     search = 'predator'
@@ -23,7 +23,7 @@ def checkforpredators(position, viewdistance, livingactors, target, role, id, pa
     else:
         search == 'predator'
 
-    for Actor in livingactors:
+    for Actor in actorsinview:
         if Actor.alive == 0:
             continue
 
@@ -38,7 +38,7 @@ def checkforpredators(position, viewdistance, livingactors, target, role, id, pa
 
             #if target is a mate, target must not be sated
             if target == 'mate':
-                match = relationcheck.relationcheck(index, Actor.index, livingactors, parameters)
+                match = relationcheck.relationcheck(index, Actor.index, actorsinview, parameters)
             else:
                 match = True
 

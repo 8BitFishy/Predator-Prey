@@ -1,4 +1,4 @@
-Duration = 598
-totalpreds = 199
-totalprey = 135
-totalplants = 266
+Duration = 20
+totalpreds = 400
+totalprey = 607
+totalplants = 2170
