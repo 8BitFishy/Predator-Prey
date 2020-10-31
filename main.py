@@ -27,13 +27,15 @@ target = 'predator'
 randmax = 1000
 t = 0
 newplant = growplant = 0
+preyav = []
+predav = []
+plantav = []
 
 #_________________________Start of main simulation___________________________
 
 if __name__ == '__main__':
 
 
-    clearvectorfiles.clearvectorfiles()
     os.system('cls' if os.name == 'nt' else 'clear')
     print("\n\n-----------------------RUN BEGIN------------------------\n")
 
@@ -69,8 +71,8 @@ if __name__ == '__main__':
         for i in range(len(livingactors)):
             livingactors[i].index = i
 
-        print(f"Round {t} - {len(livingactors)} total creatures, {plantsleft} plants left, {preyleft} prey left, {predatorsleft} predators left - ", end = "")
-        log = log + (f"\nRound {t}, Frame {t * 5} - {len(livingactors)} total creatures, {plantsleft} plants left, {preyleft} prey left, {predatorsleft} predators left - ")
+        print(f"Round {t} - {len(livingactors)} total, {predatorsleft} predators, {preyleft} prey, {plantsleft} plants - ", end = "")
+        log = log + (f"\nRound {t}, Frame {t * 5} - {plantsleft} plants left, {preyleft} prey left, {predatorsleft} predators left, {len(livingactors)} total - ")
 
 
         predborn = preyborn = plantsgrown = 0
@@ -242,11 +244,11 @@ if __name__ == '__main__':
                                 else:
                                     littersize = 0
                                     litterchance = random.randint(0, 100)
-                                    if litterchance < 75:
+                                    if litterchance < 85:
                                         littersize = 1
-                                    elif litterchance >= 75 and litterchance < 90:
+                                    elif litterchance >= 85 and litterchance < 93:
                                         littersize = 2
-                                    elif litterchance >= 90 and litterchance < 97:
+                                    elif litterchance >= 93 and litterchance < 98:
                                         littersize = 3
                                     else:
                                         littersize = 4
@@ -321,13 +323,46 @@ if __name__ == '__main__':
         if plantsleft < plantcount:
             growplants = random.randint(0, 100)
             if growplants > 95:
-                newplants = random.randint(1, groundsize / 50)
+                newplants = random.randint(1, groundsize / 100)
                 plantsgrown = newplants
                 livingactors = generate_actors.generateplants(livingactors, groundsize, newplants, t, dead, parameters)
                 plantsleft += newplants
 
         #write vectors to vector files and increment round
-        print(f"{preyborn} prey born, {preyeaten} prey eaten, {preystarved} prey starved, {preyoldage} prey died of old age - {predborn} preds born, {predstarved} preds starved, {predoldage} preds died of old age - {plantsgrown} plants grown, {plantseaten} plants eaten")
+        print(f"{predborn} preds born, {predstarved} starved, {predoldage} old age", end = '')
+        print(f" - {preyborn} prey born, {preyeaten} eaten, {preystarved} starved, {preyoldage} old age", end = '')
+        print(f" - plants ", end = '')
+        if (plantsgrown-plantseaten) >= 0 and (plantsgrown-plantseaten) <= 9:
+            print(" ", end = '')
+        print(f"{plantsgrown-plantseaten}", end = '')
+
+        preyav.append(preyborn - (preystarved + preyoldage))
+        predav.append(predborn - (predstarved + predoldage))
+        plantav.append(plantsgrown-plantseaten)
+        avrate = 10
+
+        if len(preyav) > avrate:
+            del preyav[0]
+        if len(predav) > avrate:
+            del predav[0]
+        if len(plantav) > avrate:
+            del plantav[0]
+
+        print(f" - pred ", end = '')
+        if round(sum(predav) / len(predav), 2) >= 0:
+            print(" ", end = '')
+        print(f"{round(sum(predav) / len(predav), 2)}", end = '')
+
+        print(f"  prey ", end = '')
+        if round(sum(preyav) / len(preyav), 2) >= 0:
+            print(" ", end = '')
+        print(f"{round(sum(preyav) / len(preyav), 2)} ", end = '')
+
+        print(f" plants ", end = '')
+        if round(sum(plantav) / len(plantav), 2) >= 0:
+            print(" ", end = '')
+        print(f"{round(sum(plantav) / len(plantav), 2)} ")
+
 
         for Actor in livingactors:
             if Actor not in actorlist:
@@ -359,6 +394,7 @@ if __name__ == '__main__':
 
 
     #generate exit files
+    clearvectorfiles.clearvectorfiles()
     print(f"\nGenerating log")
     outputmanager.print_log(log)
     outputmanager.populateoutputfiles(actorlist, dead, t)

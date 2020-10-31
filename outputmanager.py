@@ -95,7 +95,7 @@ def output_characteristics(actorlist):
         else:
             plantcount += 1
             actorcount = plantcount
-            newpath = 'plantactors'
+
 
         if not os.path.exists(newpath):
             os.makedirs(newpath)
@@ -114,9 +114,9 @@ def output_characteristics(actorlist):
                 file_object.write(str(f"\nActor walkspeed = {Actor.walkspeed}"))
                 file_object.write(str(f"\nActor viewdistance = {Actor.viewdistance}"))
                 file_object.write(str(f"\nActor longevity = {Actor.longevity}"))
-                file_object.write(str(f"\nActor birth = {Actor.birth}"))
                 file_object.write(str(f"\nActor parent1 = {Actor.parent1}"))
                 file_object.write(str(f"\nActor parent2 = {Actor.parent2}"))
+                file_object.write(str(f"\nActor birth = {Actor.birth}"))
                 file_object.write(str(f"\nActor death = {Actor.death}"))
                 file_object.write(str(f"\nActor age = {Actor.age}"))
                 file_object.write(str(f"\nActor lifespan = {Actor.lifespan}"))

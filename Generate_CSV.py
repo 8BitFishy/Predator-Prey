@@ -35,13 +35,15 @@ def Generate_CSV():
     actorlist = []
     preynum = prednum = 0
 
+    directory = "actors"
 
-    for files in os.walk("actors"):
+    for files in os.walk(directory):
         filelist = list(files[2])
         for file in filelist:
             actorstats = {}
+
             if "characteristics" in file:
-                dir = os.path.join("actors/", file)
+                dir = os.path.join(f"{directory}/", file)
                 with open(dir) as f:
                     for line in f:
                         name, value = line.split("=")
@@ -50,24 +52,40 @@ def Generate_CSV():
 
             id = actorstats["Actor Number"]
             role = actorstats["Actor role"]
-            walkspeed = int(actorstats["Actor walkspeed"])
-            viewdistance = int(actorstats["Actor viewdistance"])
             birth = int(actorstats["Actor birth"])
             death = int(actorstats["Actor death"])
-            age = int(actorstats["Actor age"])
-            lifespan = int(actorstats["Actor lifespan"])
-            timesmated = int(actorstats["Offspring"])
-            enemieseaten = int(actorstats["Enemies eaten"])
-            longevity = int(actorstats["Actor longevity"])
 
-            if 'eaten' in actorstats["Cause of death"]:
-                causeofdeath = 1
-            elif 'starvation' in actorstats["Cause of death"]:
-                causeofdeath = 2
-            elif 'old' in actorstats["Cause of death"]:
-                causeofdeath = 3
+            if 'plant' not in role:
+                walkspeed = int(actorstats["Actor walkspeed"])
+                viewdistance = int(actorstats["Actor viewdistance"])
+                lifespan = int(actorstats["Actor lifespan"])
+                timesmated = int(actorstats["Offspring"])
+                enemieseaten = int(actorstats["Enemies eaten"])
+                longevity = int(actorstats["Actor longevity"])
+                age = int(actorstats["Actor age"])
+                if 'eaten' in actorstats["Cause of death"]:
+                    causeofdeath = 1
+                elif 'starvation' in actorstats["Cause of death"]:
+                    causeofdeath = 2
+                elif 'old' in actorstats["Cause of death"]:
+                    causeofdeath = 3
+                else:
+                    causeofdeath = 0
+
             else:
-                causeofdeath = 0
+                walkspeed = 0
+                viewdistance = 0
+                lifespan = 0
+                timesmated = 0
+                enemieseaten = 0
+                longevity = 0
+                age = 0
+                causeofdeath = -1
+
+
+
+
+
 
             Actor = Actors(id, role, walkspeed, viewdistance, birth, death, age, lifespan, causeofdeath, timesmated, enemieseaten, longevity)
             actorlist.append(Actor)
@@ -123,8 +141,7 @@ def Generate_CSV():
             if Actor.birth != 0:
                 predsborn += 1
 
-
-        else:
+        elif 'prey' in Actor.role:
 
             if Actor.walkspeed > preyfastest:
                 preyfastestactor = Actor.id
@@ -208,7 +225,7 @@ def Generate_CSV():
 
 
     # field names
-    fields = ['Round', 'Predator Pop', 'Prey Pop', 'predstarved', 'predold', 'preyeaten', 'preystarved', 'preyold', 'av_predlifespan', 'av_preylifespan', 'av_predage', 'av_preyage',  'av_predwalkspeed', 'av_preywalkspeed', 'av_predviewdistance', 'av_preyviewdistance']
+    fields = ['Round', 'Predator Pop', 'Prey Pop', 'Plant pop', 'predstarved', 'predold', 'preyeaten', 'preystarved', 'preyold', 'av_predlifespan', 'av_preylifespan', 'av_predage', 'av_preyage',  'av_predwalkspeed', 'av_preywalkspeed', 'av_predviewdistance', 'av_preyviewdistance']
 
     # name of csv file
     filename = "stats.csv"
@@ -222,11 +239,12 @@ def Generate_CSV():
         # writing the fields
         csvwriter.writerow(fields)
 
-        predpop = preypop = 0
+        predpop = preypop = plantpop = 0
         predeaten = predstarved = predold = 0
         preyeaten = preystarved = preyold = 0
 
         for i in range(duration):
+
             row = []
             av_predwalkspeed = 0
             av_preywalkspeed = 0
@@ -254,8 +272,11 @@ def Generate_CSV():
                             predpop += 1
 
 
-                        else:
+                        elif 'prey' in Actor.role:
                             preypop += 1
+
+                        else:
+                            plantpop += 1
 
                     if Actor.death == i:
                         if 'predator' in Actor.role:
@@ -267,7 +288,7 @@ def Generate_CSV():
                             elif Actor.causeofdeath == 3:
                                 predold += 1
 
-                        else:
+                        elif 'prey' in Actor.role:
                             preypop -= 1
                             if Actor.causeofdeath == 1:
                                 preyeaten += 1
@@ -275,6 +296,10 @@ def Generate_CSV():
                                 preystarved += 1
                             elif Actor.causeofdeath == 3:
                                 preyold += 1
+
+                        else:
+                            plantpop -= 1
+
 
                     elif i > Actor.birth or i < Actor.death:
 
@@ -305,6 +330,7 @@ def Generate_CSV():
                 av_predviewdistance = 0
                 av_predwalkspeed = 0
                 av_predage = 0
+
             else:
                 av_predlifespan = av_predlifespan / predpop
                 av_predviewdistance = av_predviewdistance / predpop
@@ -324,7 +350,7 @@ def Generate_CSV():
                 av_preywalkspeed = av_preywalkspeed / preypop
                 av_preyage = av_preyage / preypop
 
-            row = [i, predpop, preypop, predstarved, predold, preyeaten, preystarved, preyold, av_predlifespan, av_preylifespan, av_predage, av_preyage, av_predwalkspeed, av_preywalkspeed, av_predviewdistance, av_preyviewdistance]
+            row = [i, predpop, preypop, plantpop,  predstarved, predold, preyeaten, preystarved, preyold, av_predlifespan, av_preylifespan, av_predage, av_preyage, av_predwalkspeed, av_preywalkspeed, av_predviewdistance, av_preyviewdistance]
 
             csvwriter.writerow(row)
 

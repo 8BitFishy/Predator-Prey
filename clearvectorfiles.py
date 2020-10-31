@@ -22,13 +22,6 @@ def clearvectorfiles():
                 dir = os.path.join("actors/", file)
                 os.remove(dir)
 
-    for files in os.walk("plantactors"):
-        filelist = list(files[2])
-        for file in filelist:
-            if "characteristics" in file:
-                dir = os.path.join("plantactors/", file)
-                os.remove(dir)
-
     for files in os.walk("log"):
         filelist = list(files[2])
         for file in filelist:

@@ -147,7 +147,7 @@ def generateplants(livingactors, groundsize, plantcount, t, dead, parameters):
             position[j] = random.randint(int(-groundsize/2), int(groundsize/2))
 
         hunger = -1
-        birth = -1
+        birth = t
         death = -1
         walkspeed = 0
         viewdistance = 0

@@ -13,15 +13,15 @@ def mutation(parent1, parent2):
     elif diceroll >= 80 and diceroll < 90:
 
         if parent2 >= parent1:
-            trait = parent2 + int(parent2*(random.randint(10, 30)/100))
+            trait = parent2 + int(parent2*(random.randint(5, 15)/100))
 
         else:
-            trait = parent1 + int(parent1*(random.randint(10, 30)/100))
+            trait = parent1 + int(parent1*(random.randint(5, 15)/100))
 
     else:
         if parent2 <= parent1:
-            trait = parent2 - int(parent2*(random.randint(10, 30)/100))
+            trait = parent2 - int(parent2*(random.randint(5, 15)/100))
         else:
-            trait = parent1 - int(parent1*(random.randint(10, 30)/100))
+            trait = parent1 - int(parent1*(random.randint(5, 15)/100))
 
     return trait
