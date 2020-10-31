@@ -37,6 +37,7 @@ if __name__ == '__main__':
     os.system('cls' if os.name == 'nt' else 'clear')
     print("\n\n-----------------------RUN BEGIN------------------------\n")
 
+    #todo replace plants with system where they are generated at start, then when eated just disappear for a short while
 
     #Read parameter file and add to parameters dict
     parameters = read_parameters.read_parameters()
@@ -174,9 +175,8 @@ if __name__ == '__main__':
                     if targetspotted == [0, 0]:
 
                         # assign search target. If actor hunger is less than randy threshold (i.e. has enough food), look for loooooove
-                        if Actor.fertility > fertilitythreshold and Actor.hunger <= Actor.longevity*(45/100):
+                        if Actor.fertility > fertilitythreshold and Actor.hunger <= Actor.longevity*(50/100):
                             target = 'mate'
-
                             targetspotted = checkforpredators.checkforpredators(Actor.position, Actor.viewdistance, actorsinview, target, Actor.role, Actor.id, parameters, Actor.index)
 
                         #if no target spotted and actor is hungry, search for food
@@ -318,16 +318,16 @@ if __name__ == '__main__':
 
 
 
-        if plantsleft < plantcount/2:
+        if plantsleft < plantcount:
             growplants = random.randint(0, 100)
-            if growplants > 90:
+            if growplants > 95:
                 newplants = random.randint(1, groundsize / 50)
                 plantsgrown = newplants
                 livingactors = generate_actors.generateplants(livingactors, groundsize, newplants, t, dead, parameters)
                 plantsleft += newplants
 
         #write vectors to vector files and increment round
-        print(f"{preyborn} prey born, {preyeaten} prey eaten, {preystarved} prey starved, {preyoldage} prey died of old age, {predborn} preds born, {predstarved} preds starved, {predoldage} preds died of old age, {plantsgrown} plants grown, {plantseaten} plants eaten")
+        print(f"{preyborn} prey born, {preyeaten} prey eaten, {preystarved} prey starved, {preyoldage} prey died of old age - {predborn} preds born, {predstarved} preds starved, {predoldage} preds died of old age - {plantsgrown} plants grown, {plantseaten} plants eaten")
 
         for Actor in livingactors:
             if Actor not in actorlist:
