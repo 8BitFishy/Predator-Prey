@@ -67,6 +67,7 @@ if __name__ == '__main__':
 
     #Start simulation
     while predatorsleft != 0:
+
         livingactors = [Actor for Actor in livingactors if Actor.alive == 1]
         for i in range(len(livingactors)):
             livingactors[i].index = i
@@ -74,6 +75,10 @@ if __name__ == '__main__':
         print(f"Round {t} - {len(livingactors)} total, {predatorsleft} predators, {preyleft} prey, {plantsleft} plants - ", end = "")
         log = log + (f"\nRound {t}, Frame {t * 5} - {plantsleft} plants left, {preyleft} prey left, {predatorsleft} predators left, {len(livingactors)} total - ")
 
+        if preyleft == 0:
+            for Actor in livingactors:
+                if Actor.role == 'plant':
+                    Actor.dying == 1
 
         predborn = preyborn = plantsgrown = 0
         predoldage = preyoldage = predstarved = preystarved = preyeaten = plantseaten = 0
@@ -319,14 +324,15 @@ if __name__ == '__main__':
 
 
 
+        if preyleft != 0:
 
-        if plantsleft < plantcount:
-            growplants = random.randint(0, 100)
-            if growplants > 95:
-                newplants = random.randint(1, groundsize / 100)
-                plantsgrown = newplants
-                livingactors = generate_actors.generateplants(livingactors, groundsize, newplants, t, dead, parameters)
-                plantsleft += newplants
+            if plantsleft < plantcount:
+                growplants = random.randint(0, 100)
+                if growplants > 95:
+                    newplants = random.randint(1, groundsize / 100)
+                    plantsgrown = newplants
+                    livingactors = generate_actors.generateplants(livingactors, groundsize, newplants, t, dead, parameters)
+                    plantsleft += newplants
 
         #write vectors to vector files and increment round
         print(f"{predborn} preds born, {predstarved} starved, {predoldage} old age", end = '')
@@ -336,10 +342,10 @@ if __name__ == '__main__':
             print(" ", end = '')
         print(f"{plantsgrown-plantseaten}", end = '')
 
-        preyav.append(preyborn - (preystarved + preyoldage))
+        preyav.append(preyborn - (preystarved + preyoldage + preyeaten))
         predav.append(predborn - (predstarved + predoldage))
         plantav.append(plantsgrown-plantseaten)
-        avrate = 10
+        avrate = 25
 
         if len(preyav) > avrate:
             del preyav[0]
@@ -361,7 +367,9 @@ if __name__ == '__main__':
         print(f" plants ", end = '')
         if round(sum(plantav) / len(plantav), 2) >= 0:
             print(" ", end = '')
-        print(f"{round(sum(plantav) / len(plantav), 2)} ")
+        print(f"{round(sum(plantav) / len(plantav), 2)} ", end='')
+
+        print(f"{sum(predav)} {len(predav)}")
 
 
         for Actor in livingactors:

@@ -61,7 +61,7 @@ def generate_actors(groundsize, parameters):
             viewdistance = random.randint(parameters["predatorviewdistance"] - 1, parameters["predatorviewdistance"] + 1)
             longevity = random.randint(parameters["predlongevity"] - 1, parameters["predlongevity"] + 1)
             lifespan = random.randint(parameters["predatorlifespan"] - 50, parameters["predatorlifespan"] + 50)
-            age = random.randint(int(lifespan*0.4), int(lifespan * 0.9))
+            age = random.randint(int(lifespan*0.2), int(lifespan * 0.8))
             hunger = random.randint(int(longevity/2 - 10), int(longevity/2 + 10))
             role = 'predator'
             size = parameters['predatorsize']
@@ -79,7 +79,7 @@ def generate_actors(groundsize, parameters):
             hunger = random.randint(int(longevity/2 - 10), int(longevity/2 + 10))
             role = 'prey'
             size = parameters['preysize']
-            age = random.randint(int(lifespan*0.4), int(lifespan * 0.9))
+            age = random.randint(int(lifespan*0.2), int(lifespan * 0.8))
             fertility = random.randint(int(parameters["preyfertility"]*0.1), int(parameters["preyfertility"]*1.5))
 
 
