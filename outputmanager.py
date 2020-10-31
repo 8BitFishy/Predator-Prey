@@ -11,6 +11,18 @@ def print_log(log):
         file_object.write(str(log))
         file_object.write("\n")
 
+def print_inputs(parameters):
+
+    newpath = 'log'
+
+    if not os.path.exists(newpath):
+        os.makedirs(newpath)
+
+    with open(f'{newpath}\\Input Parameters.txt', 'a')as file_object:
+        for x in parameters:
+            file_object.write(str(f"{x} = {parameters[x]}"))
+            file_object.write("\n")
+
 
 
 def populateoutputfiles(actorlist, dead, t):

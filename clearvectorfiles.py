@@ -31,4 +31,7 @@ def clearvectorfiles():
             if "Stats" in file:
                 dir = os.path.join("log/", file)
                 os.remove(dir)
+            if "Parameters" in file:
+                dir = os.path.join("log/", file)
+                os.remove(dir)
     return()

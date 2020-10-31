@@ -75,11 +75,6 @@ if __name__ == '__main__':
         print(f"Round {t} - {len(livingactors)} total, {predatorsleft} predators, {preyleft} prey, {plantsleft} plants - ", end = "")
         log = log + (f"\nRound {t}, Frame {t * 5} - {plantsleft} plants left, {preyleft} prey left, {predatorsleft} predators left, {len(livingactors)} total - ")
 
-        if preyleft == 0:
-            for Actor in livingactors:
-                if Actor.role == 'plant':
-                    Actor.dying == 1
-
         predborn = preyborn = plantsgrown = 0
         predoldage = preyoldage = predstarved = preystarved = preyeaten = plantseaten = 0
 
@@ -328,8 +323,8 @@ if __name__ == '__main__':
 
             if plantsleft < plantcount:
                 growplants = random.randint(0, 100)
-                if growplants > 95:
-                    newplants = random.randint(1, groundsize / 100)
+                if growplants > 80:
+                    newplants = random.randint(1, 10)
                     plantsgrown = newplants
                     livingactors = generate_actors.generateplants(livingactors, groundsize, newplants, t, dead, parameters)
                     plantsleft += newplants
@@ -345,7 +340,7 @@ if __name__ == '__main__':
         preyav.append(preyborn - (preystarved + preyoldage + preyeaten))
         predav.append(predborn - (predstarved + predoldage))
         plantav.append(plantsgrown-plantseaten)
-        avrate = 25
+        avrate = 50
 
         if len(preyav) > avrate:
             del preyav[0]
@@ -367,16 +362,16 @@ if __name__ == '__main__':
         print(f" plants ", end = '')
         if round(sum(plantav) / len(plantav), 2) >= 0:
             print(" ", end = '')
-        print(f"{round(sum(plantav) / len(plantav), 2)} ", end='')
-
-        print(f"{sum(predav)} {len(predav)}")
-
+        print(f"{round(sum(plantav) / len(plantav), 2)} ")
 
         for Actor in livingactors:
             if Actor not in actorlist:
                 actorlist.append(Actor)
 
-
+        if preyleft == 0 and plantsleft != 0:
+            for Actor in livingactors:
+                if Actor.role == 'plant':
+                    Actor.dying = 1
         t += 1
 
 
@@ -402,6 +397,8 @@ if __name__ == '__main__':
 
 
     #generate exit files
+    print(f"\nGenerating Parameter File")
+    outputmanager.print_inputs(parameters)
     clearvectorfiles.clearvectorfiles()
     print(f"\nGenerating log")
     outputmanager.print_log(log)
