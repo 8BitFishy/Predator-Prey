@@ -203,7 +203,7 @@ def Generate_CSV():
     if not os.path.exists(newpath):
         os.makedirs(newpath)
 
-    with open(f'{newpath}\\Actor Stats.txt', 'a')as f:
+    with open(f'{newpath}\\Actor Stats.txt', 'w')as f:
         f.write(str((f"Fastest predator = {predfastestactor} with speed {predfastest}")))
         f.write(str((f"\nFastest prey = {preyfastestactor} with speed {preyfastest}")))
         f.write(str((f"\nHungriest predator = {predhungriestactor} with {predhungriest} eaten enemies")))

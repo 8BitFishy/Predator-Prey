@@ -2,7 +2,7 @@ predatorsize = 5
 preysize = 3
 plantsize = 1.5
 groundsize = 10000
-offload = 100
+offload = 500
 
 predatorcount = 400
 predatorlifespan = 800
@@ -22,10 +22,10 @@ preywalkspeed = 6
 preyviewdistance = 140
 preylongevity = 1000
 preymatingpenalty = 30
-preyeatinggain = 600
+preyeatinggain = 500
 preymatingwait = 5
 preybornwait = 7
 preyeatingwait = 4
-preyfertility = 60
+preyfertility = 70
 
 plantcount = 2000

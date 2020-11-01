@@ -25,7 +25,7 @@ def clearvectorfiles():
     for files in os.walk("log"):
         filelist = list(files[2])
         for file in filelist:
-            if "log" in file or "Stats" in file or "Parameters" in file or "Parameters" in file:
+            if "log" in file or "Stats" in file or 'stats' in file or "Parameters" in file or "Parameters" in file:
                 dir = os.path.join("log/", file)
                 os.remove(dir)
 

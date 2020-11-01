@@ -39,10 +39,7 @@ if __name__ == '__main__':
     os.system('cls' if os.name == 'nt' else 'clear')
     print("\n\n-----------------------RUN BEGIN------------------------\n")
 
-    #todo build system to dump dead actors out of memory, fill in vectors with second script pre-blender load up
-    #todo every thousand cycles print dead actor characteristics and vector files
     #todo early system end system
-    #todo remove vector backfilling and move system to end
 
 
     #Read parameter file and add to parameters dict
@@ -84,14 +81,14 @@ if __name__ == '__main__':
         for i in range(len(livingactors)):
             livingactors[i].index = i
 
-        #print output files for dead actors
+        #print output files for actors and offload dead actors
         if t%parameters["offload"] == 0:
             deadactors.extend(livingactors)
             outputmanager.populateoutputfiles(deadactors)
             outputmanager.output_characteristics(deadactors)
             outputmanager.print_outputparams(predatortotal, preytotal, plantstotal, t)
             outputmanager.print_log(log)
-            deadactors = []
+            deadactors.clear()
 
 
         #log updates
