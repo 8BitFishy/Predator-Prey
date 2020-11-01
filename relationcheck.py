@@ -1,23 +1,28 @@
+import speciation
+
 def relationcheck(actor1, actor2, actorsinview, parameters):
     fertile = False
 
     #if actor roles are not the same - no match
     if actorsinview[actor1].role == actorsinview[actor2].role:
 
-        #if actors are sated - no match
-        if actorsinview[actor2].sated < 5:
+        #if actors are same sub-species
+        if speciation.speciation(actor1, actor2, actorsinview):
 
-            #if actors are not starving to death
-            if actorsinview[actor2].hunger <= actorsinview[actor2].longevity*(60 / 100):
+            #if actors are sated - no match
+            if actorsinview[actor2].sated < 5:
 
-                # if actor 2 is infertile - no match
-                if actorsinview[actor1].role == 'predator':
+                #if actors are not starving to death
+                if actorsinview[actor2].hunger <= actorsinview[actor2].longevity*(60 / 100):
 
-                    if actorsinview[actor2].fertility > parameters["predfertility"]:
-                        fertile = True
-                else:
-                    if actorsinview[actor2].fertility > parameters["preyfertility"]:
-                        fertile = True
+                    # if actor 2 is infertile - no match
+                    if actorsinview[actor1].role == 'predator':
+
+                        if actorsinview[actor2].fertility > parameters["predfertility"]:
+                            fertile = True
+                    else:
+                        if actorsinview[actor2].fertility > parameters["preyfertility"]:
+                            fertile = True
 
     if fertile is True:
 

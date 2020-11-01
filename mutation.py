@@ -6,7 +6,12 @@ def mutation(parent1, parent2):
 
     #somewhere betweem the two
     if diceroll <= 81:
-        trait = random.randint(parent1, parent2)
+        if parent1 == parent2:
+            trait = parent1
+        elif parent1 < parent2:
+            trait = random.randint(parent1, parent2)
+        else:
+            trait = random.randint(parent2, parent1)
 
     #take after parent 1
     elif diceroll > 81 and diceroll <= 90:

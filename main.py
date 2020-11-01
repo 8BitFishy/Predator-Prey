@@ -15,6 +15,7 @@ import random
 import Generate_CSV
 import Actors_In_View
 
+
 parameters = {}
 duration = 0
 actorlist = []
@@ -31,15 +32,18 @@ preyav = []
 predav = []
 plantav = []
 
+
 #_________________________Start of main simulation___________________________
 
 if __name__ == '__main__':
 
-
     os.system('cls' if os.name == 'nt' else 'clear')
     print("\n\n-----------------------RUN BEGIN------------------------\n")
 
-    #todo replace plants with system where they are generated at start, then when eated just disappear for a short while
+    #todo build system to dump dead actors out of memory, fill in vectors with second script pre-blender load up
+    #todo every thousand cycles print dead actor characteristics and vector files
+    #todo early system end system
+    #todo remove vector backfilling and move system to end
 
     #Read parameter file and add to parameters dict
     parameters = read_parameters.read_parameters()
@@ -66,14 +70,14 @@ if __name__ == '__main__':
     log = ''
 
     #Start simulation
-    while predatorsleft != 0:
+    while predatorsleft != 0 and preyleft != 0:
 
         livingactors = [Actor for Actor in livingactors if Actor.alive == 1]
         for i in range(len(livingactors)):
             livingactors[i].index = i
 
         print(f"Round {t} - {len(livingactors)} total, {predatorsleft} predators, {preyleft} prey, {plantsleft} plants - ", end = "")
-        log = log + (f"\nRound {t}, Frame {t * 5} - {plantsleft} plants left, {preyleft} prey left, {predatorsleft} predators left, {len(livingactors)} total - ")
+        log = log + (f"\nRound {t}, Frame {t * 5} - {len(livingactors)} total, {predatorsleft} predators left, {preyleft} prey left, {plantsleft} plants left - ")
 
         predborn = preyborn = plantsgrown = 0
         predoldage = preyoldage = predstarved = preystarved = preyeaten = plantseaten = 0
@@ -152,6 +156,7 @@ if __name__ == '__main__':
                     actorsinview = []
                     actorsinview.append(Actor)
                     actorsinview = Actors_In_View.Actors_In_View(actorsinview, livingactors, Actor.position, Actor.viewdistance, Actor.role)
+
                     for i in range(len(actorsinview)):
                         actorsinview[i].index = i
 
@@ -313,21 +318,20 @@ if __name__ == '__main__':
                     Actor.lastmovement = movement
                     Actor.position = updateposition.updateposition(Actor.position, movement)
 
-
+            #append vectors to actor vector list
             Actor.vectors.append([Actor.position[0], Actor.position[1]])
 
 
+        #Grow new plants
+        if plantsleft < plantcount:
+            growplants = random.randint(0, 100)
+            if growplants > 80:
+                newplants = random.randint(0, 10)
+                plantsgrown = newplants
+                livingactors = generate_actors.generateplants(livingactors, groundsize, newplants, t, dead, parameters)
+                plantsleft += newplants
 
 
-        if preyleft != 0:
-
-            if plantsleft < plantcount:
-                growplants = random.randint(0, 100)
-                if growplants > 80:
-                    newplants = random.randint(1, 10)
-                    plantsgrown = newplants
-                    livingactors = generate_actors.generateplants(livingactors, groundsize, newplants, t, dead, parameters)
-                    plantsleft += newplants
 
         #write vectors to vector files and increment round
         print(f"{predborn} preds born, {predstarved} starved, {predoldage} old age", end = '')
@@ -337,6 +341,7 @@ if __name__ == '__main__':
             print(" ", end = '')
         print(f"{plantsgrown-plantseaten}", end = '')
 
+        #generate population growth/reduction rate
         preyav.append(preyborn - (preystarved + preyoldage + preyeaten))
         predav.append(predborn - (predstarved + predoldage))
         plantav.append(plantsgrown-plantseaten)
@@ -364,10 +369,11 @@ if __name__ == '__main__':
             print(" ", end = '')
         print(f"{round(sum(plantav) / len(plantav), 2)} ")
 
+        #add new actors to actorlist
         for Actor in livingactors:
             if Actor not in actorlist:
                 actorlist.append(Actor)
-
+        #if all prey are dead then kill all plants to speed up ending
         if preyleft == 0 and plantsleft != 0:
             for Actor in livingactors:
                 if Actor.role == 'plant':
@@ -397,10 +403,10 @@ if __name__ == '__main__':
 
 
     #generate exit files
+    clearvectorfiles.clearvectorfiles()
     print(f"\nGenerating Parameter File")
     outputmanager.print_inputs(parameters)
-    clearvectorfiles.clearvectorfiles()
-    print(f"\nGenerating log")
+    print(f"Generating log")
     outputmanager.print_log(log)
     outputmanager.populateoutputfiles(actorlist, dead, t)
     outputmanager.output_characteristics(actorlist)

@@ -229,9 +229,8 @@ def Generate_CSV():
 
     # name of csv file
     filename = "stats.csv"
-
     # writing to csv file
-    with open(filename, 'w', newline = "") as csvfile:
+    with open(f"{newpath}//{filename}", 'w', newline = "") as csvfile:
 
         # creating a csv writer object
         csvwriter = csv.writer(csvfile)
@@ -314,7 +313,7 @@ def Generate_CSV():
                                 av_predage += (i - Actor.birth)
 
 
-                        else:
+                        elif 'prey' in Actor.role:
 
                             av_preywalkspeed += Actor.walkspeed
                             av_preyviewdistance += Actor.viewdistance
