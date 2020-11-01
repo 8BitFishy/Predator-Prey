@@ -4,7 +4,7 @@ plantsize = 1.5
 groundsize = 300
 offload = 10
 
-predatorcount = 5
+predatorcount = 400
 predatorlifespan = 800
 predatorwalkspeed = 8
 predatorviewdistance = 160
@@ -16,7 +16,7 @@ predbornwait = 8
 predeatingwait = 6
 predfertility = 90
 
-preycount = 40
+preycount = 700
 preylifespan = 700
 preywalkspeed = 6
 preyviewdistance = 140
@@ -28,4 +28,4 @@ preybornwait = 7
 preyeatingwait = 4
 preyfertility = 60
 
-plantcount = 20
+plantcount = 2000

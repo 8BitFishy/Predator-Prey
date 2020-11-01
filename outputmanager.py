@@ -7,7 +7,7 @@ def print_log(log):
     if not os.path.exists(newpath):
         os.makedirs(newpath)
 
-    with open(f'{newpath}\\log.txt', 'a')as file_object:
+    with open(f'{newpath}\\log.txt', 'w')as file_object:
         file_object.write(str(log))
         file_object.write("\n")
 
@@ -18,7 +18,7 @@ def print_inputs(parameters):
     if not os.path.exists(newpath):
         os.makedirs(newpath)
 
-    with open(f'{newpath}\\Input Parameters.txt', 'a')as file_object:
+    with open(f'{newpath}\\Input Parameters.txt', 'w')as file_object:
         for x in parameters:
             file_object.write(str(f"{x} = {parameters[x]}"))
             file_object.write("\n")
@@ -40,7 +40,7 @@ def populateoutputfiles(actorlist):
 
         actoroutput = ('{}\\{} {} vectors.txt'.format(newpath, Actor.role, Actor.actorcount))
 
-        with open(actoroutput, 'a')as file_object:
+        with open(actoroutput, 'w')as file_object:
 
             file_object.write(str(Actor.birth))
             file_object.write("\n")
@@ -71,7 +71,7 @@ def output_characteristics(actorlist):
         if Actor.causeofdeath == "":
             Actor.causeofdeath = "survived"
 
-        with open(actoroutput, 'a')as file_object:
+        with open(actoroutput, 'w')as file_object:
             if Actor.role != "plant":
                 file_object.write(str(f"Actor ID = {Actor.id}"))
                 file_object.write(str(f"\nActor role = {Actor.role}"))

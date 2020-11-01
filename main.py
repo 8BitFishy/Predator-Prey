@@ -29,9 +29,7 @@ predav = []
 plantav = []
 deadactors = []
 
-predatortotal = preytotal = 0
-predsleft = preyleft = 0
-plantsleft = plantstotal = 0
+
 
 #_________________________Start of main simulation___________________________
 
@@ -53,6 +51,10 @@ if __name__ == '__main__':
     predatorcount = parameters["predatorcount"]
     preycount = parameters["preycount"]
     plantcount = parameters["plantcount"]
+
+    predatortotal = preytotal = 0
+    predsleft = preyleft = 0
+    plantsleft = plantstotal = 0
 
     #Generate starting actors and fill out population count
     livingactors = generate_actors.generate_actors(groundsize, parameters)
@@ -84,6 +86,7 @@ if __name__ == '__main__':
 
         #print output files for dead actors
         if t%parameters["offload"] == 0:
+            deadactors.extend(livingactors)
             outputmanager.populateoutputfiles(deadactors)
             outputmanager.output_characteristics(deadactors)
             outputmanager.print_outputparams(predatortotal, preytotal, plantstotal, t)
