@@ -25,102 +25,55 @@ def print_inputs(parameters):
 
 
 
-def populateoutputfiles(actorlist, dead, t):
-    actorcount = 0
-    preycount = 0
-    predcount = 0
-    plantcount = 0
+def populateoutputfiles(actorlist):
     l = printed = 0
-    print(f"Generating vectors", end='')
 
     for Actor in actorlist:
 
-        if int((l/len(actorlist)) * 100) % 10 == 0 and printed == 0:
-            print(".", end = '')
-            printed = 1
-        else:
-            printed = 0
-        l += 1
-
-        while len(Actor.vectors) < t:
-            Actor.vectors.append(dead)
-
-
         newpath = 'vectors'
 
-        if Actor.role == "prey":
-            preycount += 1
-            actorcount = preycount
-        elif Actor.role == 'predator':
-            predcount += 1
-            actorcount = predcount
-
-        else:
-            plantcount += 1
-            actorcount = plantcount
+        if Actor.role == "plant":
             newpath = 'plantvectors'
 
         if not os.path.exists(newpath):
             os.makedirs(newpath)
 
-        actoroutput = ('{}\\{}{}vectors.txt'.format(newpath, Actor.role, actorcount))
+        actoroutput = ('{}\\{}{}vectors.txt'.format(newpath, Actor.role, Actor.actorcount))
 
         with open(actoroutput, 'a')as file_object:
 
-            for i in range(t):
+            file_object.write(str(Actor.birth))
+            file_object.write("\n")
 
-                    for e in range(0, 2):
-                        file_object.write(str(Actor.vectors[i][e]))
-                        file_object.write(",")
-                    if Actor.vectors[i] == dead:
-                        file_object.write(str(dead[1]))
-                    else:
-                        file_object.write(str(Actor.size / 2))
-                    file_object.write("\n")
+            for i in Actor.vectors:
+
+                for e in i:
+                    file_object.write(str(e))
+                    file_object.write(",")
+                file_object.write(str(Actor.size / 2))
+                file_object.write("\n")
 
 
 def output_characteristics(actorlist):
 
     newpath = 'actors'
-    actorcount = preycount = predcount = plantcount = 0
     i = printed = 0
-    print(f"\nGenerating actor characteristics files", end='')
     for Actor in actorlist:
 
-        if int((i/len(actorlist)) * 100) % 10 == 0 and printed == 0:
-            print(".", end = '')
-            printed = 1
-        else:
-            printed = 0
-
-        i += 1
-
         newpath = 'actors'
-
-        if Actor.role == "prey":
-            preycount += 1
-            actorcount = preycount
-        elif Actor.role == 'predator':
-            predcount += 1
-            actorcount = predcount
-
-        else:
-            plantcount += 1
-            actorcount = plantcount
-
 
         if not os.path.exists(newpath):
             os.makedirs(newpath)
 
 
-        actoroutput = ('{}\\{}{} - actor {} characteristics.txt'.format(newpath, Actor.role, actorcount, Actor.id))
+        actoroutput = ('{}\\{}{} - actor {} characteristics.txt'.format(newpath, Actor.role, Actor.actorcount, Actor.id))
 
         if Actor.causeofdeath == "":
             Actor.causeofdeath = "survived"
 
         with open(actoroutput, 'a')as file_object:
             if Actor.role != "plant":
-                file_object.write(str(f"Actor Number = {Actor.id}"))
+                file_object.write(str(f"Actor ID = {Actor.id}"))
                 file_object.write(str(f"\nActor role = {Actor.role}"))
                 file_object.write(str(f"\nActor size = {Actor.size}"))
                 file_object.write(str(f"\nActor walkspeed = {Actor.walkspeed}"))
@@ -136,7 +89,7 @@ def output_characteristics(actorlist):
                 file_object.write(str(f"\nOffspring = {Actor.timesmated}"))
                 file_object.write(str(f"\nEnemies eaten = {Actor.enemieseaten}"))
             else:
-                file_object.write(str(f"Actor Number = {Actor.id}"))
+                file_object.write(str(f"Actor ID = {Actor.id}"))
                 file_object.write(str(f"\nActor role = {Actor.role}"))
                 file_object.write(str(f"\nActor birth = {Actor.birth}"))
                 file_object.write(str(f"\nActor death = {Actor.death}"))
@@ -146,18 +99,7 @@ def output_characteristics(actorlist):
 
 
 
-def print_outputparams(actorlist, t):
-    totalpreds = 0
-    totalprey = 0
-    totalplants = 0
-
-    for Actor in actorlist:
-        if Actor.role == 'predator':
-            totalpreds += 1
-        elif Actor.role == 'prey':
-            totalprey += 1
-        else:
-            totalplants += 1
+def print_outputparams(predatortotal, preytotal, plantstotal, t):
 
     filename = "Outputparams.txt"
     if not os.path.exists(filename):
@@ -165,7 +107,7 @@ def print_outputparams(actorlist, t):
 
     f = open(filename, "w")
     f.write(str(f"Duration = {t}"))
-    f.write(str(f"\ntotalpreds = {totalpreds}"))
-    f.write(str(f"\ntotalprey = {totalprey}"))
-    f.write(str(f"\ntotalplants = {totalplants}"))
+    f.write(str(f"\ntotalpreds = {predatortotal}"))
+    f.write(str(f"\ntotalprey = {preytotal}"))
+    f.write(str(f"\ntotalplants = {plantstotal}"))
     f.close()

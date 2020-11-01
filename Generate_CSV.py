@@ -50,7 +50,7 @@ def Generate_CSV():
                         name = name.rstrip(" ")
                         actorstats[name] = value.rstrip('\n')
 
-            id = actorstats["Actor Number"]
+            id = actorstats["Actor ID"]
             role = actorstats["Actor role"]
             birth = int(actorstats["Actor birth"])
             death = int(actorstats["Actor death"])
@@ -228,7 +228,7 @@ def Generate_CSV():
     fields = ['Round', 'Predator Pop', 'Prey Pop', 'Plant pop', 'predstarved', 'predold', 'preyeaten', 'preystarved', 'preyold', 'av_predlifespan', 'av_preylifespan', 'av_predage', 'av_preyage',  'av_predwalkspeed', 'av_preywalkspeed', 'av_predviewdistance', 'av_preyviewdistance']
 
     # name of csv file
-    filename = "stats.csv"
+    filename = "Stats.csv"
     # writing to csv file
     with open(f"{newpath}//{filename}", 'w', newline = "") as csvfile:
 

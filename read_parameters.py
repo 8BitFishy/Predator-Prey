@@ -14,6 +14,7 @@ def read_parameters():
     parameters["predatorsize"] = float(parameters["predatorsize"])
     parameters["preysize"] = float(parameters["preysize"])
     parameters["groundsize"] = int(parameters["groundsize"])
+    parameters["offload"] = int(parameters["offload"])
 
     parameters["predatorcount"] = int(parameters["predatorcount"])
     parameters["predatorlifespan"] = int(parameters["predatorlifespan"])

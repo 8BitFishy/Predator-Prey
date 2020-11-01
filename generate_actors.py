@@ -6,10 +6,19 @@ from itertools import count
 
 class Actors:
     _ids = count(0)
+    _preyid = count(0)
+    _predid = count(0)
+    _plantid = count(0)
 
     def __init__(self, role, size, position, walkspeed, viewdistance, hunger, longevity, birth, death, age, lifespan, parent1, parent2, fertility, vectors, index):
         self.id = next(self._ids)
         self.role = role
+        if role == 'prey':
+            self.actorcount = next(self._preyid)
+        elif role == 'predator':
+            self.actorcount = next(self._predid)
+        else:
+            self.actorcount = next(self._plantid)
         self.size = size
         self.position = position
         self.walkspeed = walkspeed
@@ -40,7 +49,7 @@ def generate_actors(groundsize, parameters):
     preycount = parameters["preycount"]
     preywalkspeed = parameters["preywalkspeed"]
     preyviewdistance = parameters["preyviewdistance"]
-    actorlist = []
+    livingactors = []
     parent1 = -1
     parent2 = -1
     birth = 0
@@ -56,7 +65,6 @@ def generate_actors(groundsize, parameters):
         index = i
 
         if i >= preycount:
-
             walkspeed = random.randint(parameters["predatorwalkspeed"] - 1, parameters["predatorwalkspeed"] + 1)
             viewdistance = random.randint(parameters["predatorviewdistance"] - 1, parameters["predatorviewdistance"] + 1)
             longevity = random.randint(parameters["predlongevity"] - 1, parameters["predlongevity"] + 1)
@@ -71,7 +79,6 @@ def generate_actors(groundsize, parameters):
                 position[j] = random.randint(int(-groundsize/2), int(groundsize/2))
 
         else:
-
             walkspeed = random.randint(parameters["preywalkspeed"] - 1, parameters["preywalkspeed"] + 1)
             viewdistance = random.randint(parameters["preyviewdistance"] - 1, parameters["preyviewdistance"] + 1)
             longevity = random.randint(parameters["preylongevity"] - 1, parameters["preylongevity"] + 1)
@@ -92,16 +99,16 @@ def generate_actors(groundsize, parameters):
 
         # Create actors and print out list
         Actor = Actors(role, size, position, walkspeed, viewdistance, hunger, longevity, birth, death, age, lifespan, parent1, parent2, fertility, vectors, index)
-        actorlist.append(Actor)
+        livingactors.append(Actor)
 
 
-    return actorlist
+    return livingactors
 
 
 
 
 
-def createnewactor(livingactors, actorsinview, parent1, parent2, parameters, t, dead):
+def createnewactor(livingactors, actorsinview, parent1, parent2, t):
 
         position = [0, 0]
         birth = t
@@ -118,11 +125,7 @@ def createnewactor(livingactors, actorsinview, parent1, parent2, parameters, t, 
         size = actorsinview[parent1].size
         fertility = 0
         hunger = longevity/2
-        vectors = [[dead[0], dead[1]]]
-
-        for i in range(1, t):
-            vectors.append([dead[0], dead[1]])
-        vectors.append([position[0], position[1]])
+        vectors = [[position[0], position[1]]]
 
 
         index = len(livingactors)
@@ -130,13 +133,10 @@ def createnewactor(livingactors, actorsinview, parent1, parent2, parameters, t, 
         Actor = Actors(role, size, position, walkspeed, viewdistance, hunger, longevity, birth, death, age, lifespan, actorsinview[parent1].id, actorsinview[parent2].id, fertility, vectors, index)
         livingactors.append(Actor)
 
-
-
-
         return(livingactors)
 
 
-def generateplants(livingactors, groundsize, plantcount, t, dead, parameters):
+def generateplants(livingactors, groundsize, plantcount, t, parameters):
 
     for i in range(plantcount):
 
@@ -159,14 +159,8 @@ def generateplants(livingactors, groundsize, plantcount, t, dead, parameters):
         fertility = -1
         age = 0
 
-        if t == 0:
-            vectors = [[position[0], position[1]]]
-        else:
-            vectors = [[dead[0], dead[1]]]
-            for l in range(1, t):
-                vectors.append([dead[0], dead[1]])
+        vectors = [[position[0], position[1]]]
 
-        vectors.append([position[0], position[1]])
         index = len(livingactors)
         Actor = Actors(role, size, position, walkspeed, viewdistance, hunger, longevity, birth, death, age, lifespan, parent1, parent2, fertility, vectors, index)
         livingactors.append(Actor)
