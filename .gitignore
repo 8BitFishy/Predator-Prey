@@ -10,3 +10,4 @@ log/
 .replit
 .idea/
 __pycache__/
+*.blend1

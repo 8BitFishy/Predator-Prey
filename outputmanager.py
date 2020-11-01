@@ -38,7 +38,7 @@ def populateoutputfiles(actorlist):
         if not os.path.exists(newpath):
             os.makedirs(newpath)
 
-        actoroutput = ('{}\\{}{}vectors.txt'.format(newpath, Actor.role, Actor.actorcount))
+        actoroutput = ('{}\\{} {} vectors.txt'.format(newpath, Actor.role, Actor.actorcount))
 
         with open(actoroutput, 'a')as file_object:
 
@@ -66,7 +66,7 @@ def output_characteristics(actorlist):
             os.makedirs(newpath)
 
 
-        actoroutput = ('{}\\{}{} - actor {} characteristics.txt'.format(newpath, Actor.role, Actor.actorcount, Actor.id))
+        actoroutput = ('{}\\{} {} - actor {} characteristics.txt'.format(newpath, Actor.role, Actor.actorcount, Actor.id))
 
         if Actor.causeofdeath == "":
             Actor.causeofdeath = "survived"

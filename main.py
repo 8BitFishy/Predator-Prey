@@ -19,7 +19,7 @@ import Actors_In_View
 parameters = {}
 duration = 0
 livingactors = []
-dead = [9000, 9000, 9000]
+dead = [99999, 99999, 99999]
 target = 'predator'
 randmax = 1000
 t = 0
