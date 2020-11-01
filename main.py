@@ -90,6 +90,7 @@ if __name__ == '__main__':
             outputmanager.populateoutputfiles(deadactors)
             outputmanager.output_characteristics(deadactors)
             outputmanager.print_outputparams(predatortotal, preytotal, plantstotal, t)
+            outputmanager.print_log(log)
             deadactors = []
 
 
