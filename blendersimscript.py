@@ -33,30 +33,30 @@ plantlist = []
 class Predators:
     _ids = count(1)
 
-    def __init__(self):
+    def __init__(self, name):
         self.id = next(self._ids)
         self.positions = []
-        self.name = "Predator{}".format(self.id)
+        self.name = name
         self.predbody = bpy.data.objects["Cube"]
 
 
 class Prey:
     _ids = count(1)
 
-    def __init__(self):
+    def __init__(self, name):
         self.id = next(self._ids)
         self.positions = []
-        self.name = "Prey{}".format(self.id)
+        self.name = name
         self.preybody = bpy.data.objects["Cube"]
 
 
 class Plant:
     _ids = count(1)
 
-    def __init__(self):
+    def __init__(self, name):
         self.id = next(self._ids)
         self.positions = []
-        self.name = "Plant{}".format(self.id)
+        self.name = name
         self.plantbody = bpy.data.objects["Cube"]
 
 
@@ -65,9 +65,9 @@ os.system('cls' if os.name == 'nt' else 'clear')
 if __name__ == '__main__':
 
     print("\n\n-----------------------RUN BEGIN------------------------\n\n")
-
+    newpath = 'animation_data\\'
     # Get duration and actor counts
-    with open("{}Outputparams.txt".format(dir)) as f:
+    with open(f"{dir}{newpath}animation_params.txt") as f:
         for line in f:
             name, value = line.split("=")
             name = name.rstrip(" ")
@@ -90,66 +90,63 @@ if __name__ == '__main__':
 
     # Initialise actors, assign numerical ID, append to actor list and assign vectors
 
-    for i in range(preycount):
+    c = 0
 
-        print(
-            f"Generating prey {i + 1} of {preycount + 1} - {int((i / (preycount + predatorcount + plantcount + duration)) * 100)}%\n")
+    for files in os.walk(f"{dir}{newpath}"):
 
-        bpy.ops.mesh.primitive_cube_add(size=preysize, enter_editmode=False, location=[0, 0, 0])
+        filelist = list(files[2])
 
-        preyinstance = Prey()
+        for file in filelist:
+            if "vectors" in file:
+                c += 1
+                print(f"Generating actor {c} of {len(filelist)} - {int((c / len(filelist)) * 100)}%\n")
+                with open(f"{dir}{newpath}{file}", "r") as f:
+                    filename = file.split(" ")
+                    actor_type = filename[0]
+                    actor_number = filename[1]
+                    line = f.read().splitlines()
 
-        filename = ('{}vectors\prey{}vectors.txt'.format(dir, preyinstance.id))
-        with open(filename) as f:
-            line = f.read().splitlines()
-            for k in line:
-                positions = k.split(',')
-                for a in range(0, 3):
-                    positions[a] = float(positions[a])
-                preyinstance.positions.append(positions)
+                    if actor_type == 'predator':
+                        bpy.ops.mesh.primitive_cube_add(size=predatorsize, enter_editmode=False, location=[0, 0, 0])
+                        predinstance = Predators(str(f"{actor_type} {actor_number}"))
 
-        preyinstance.preybody.name = preyinstance.name
-        preylist.append(preyinstance)
+                        for k in line:
+                            positions = k.split(',')
+                            for a in range(0, 3):
+                                positions[a] = float(positions[a])
 
-    for i in range(predatorcount):
-        print(
-            f"Generating predators {i + 1} of {predatorcount + 1} - {int(((i + preycount) / (preycount + predatorcount + plantcount + duration)) * 100)}%\n")
-        bpy.ops.mesh.primitive_cube_add(size=predatorsize, enter_editmode=False, location=[0, 0, 0])
+                            predinstance.positions.append(positions)
 
-        predinstance = Predators()
+                        predinstance.predbody.name = predinstance.name
+                        predatorlist.append(predinstance)
 
-        filename = ('{}vectors\predator{}vectors.txt'.format(dir, predinstance.id))
+                    elif actor_type == 'prey':
+                        bpy.ops.mesh.primitive_cube_add(size=preysize, enter_editmode=False, location=[0, 0, 0])
+                        preyinstance = Prey(str(f"{actor_type} {actor_number}"))
 
-        with open(filename) as f:
-            line = f.read().splitlines()
-            for k in line:
-                positions = k.split(',')
-                for a in range(0, 3):
-                    positions[a] = float(positions[a])
-                predinstance.positions.append(positions)
+                        for k in line:
+                            positions = k.split(',')
+                            for a in range(0, 3):
+                                positions[a] = float(positions[a])
+                            preyinstance.positions.append(positions)
 
-        predinstance.predbody.name = predinstance.name
-        predatorlist.append(predinstance)
+                        preyinstance.preybody.name = preyinstance.name
+                        preylist.append(preyinstance)
 
-    for i in range(plantcount):
-        print(
-            f"Generating plants {i + 1} of {plantcount + 1} - {int(((i + preycount + predatorcount) / (preycount + predatorcount + plantcount + duration)) * 100)}%\n")
-        bpy.ops.mesh.primitive_cube_add(size=plantsize, enter_editmode=False, location=[0, 0, 0])
-        plantinstance = Plant()
-        filename = ('{}plantvectors\plant{}vectors.txt'.format(dir, plantinstance.id))
+                    elif actor_type == 'plant':
+                        bpy.ops.mesh.primitive_cube_add(size=plantsize, enter_editmode=False, location=[0, 0, 0])
+                        plantinstance = Plant(str(f"{actor_type} {actor_number}"))
 
-        with open(filename) as f:
-            line = f.read().splitlines()
-            for k in line:
-                positions = k.split(',')
-                for a in range(0, 3):
-                    positions[a] = float(positions[a])
-                plantinstance.positions.append(positions)
+                        for k in line:
+                            positions = k.split(',')
+                            for a in range(0, 3):
+                                positions[a] = float(positions[a])
+                            plantinstance.positions.append(positions)
 
-        plantinstance.plantbody.name = plantinstance.name
-        plantlist.append(plantinstance)
+                        plantinstance.plantbody.name = plantinstance.name
+                        plantlist.append(plantinstance)
 
-    # Generate and name actors
+        # Generate and name actors
 
     bpy.ops.mesh.primitive_plane_add(size=groundsize + 10, enter_editmode=False, location=(0, 0, 0))
 
@@ -159,8 +156,7 @@ if __name__ == '__main__':
     for i in range(0, duration):
 
         bpy.context.scene.frame_set(frame_num)
-        print(
-            f"Generating frame {frame_num} of {(duration * framerate) - framerate} - {int(((i + preycount + predatorcount + plantcount) / (preycount + predatorcount + plantcount + duration)) * 100) + 1}%\n")
+        print(f"Generating frame {i} of {duration}\n")
 
         for preyinstance in preylist:
             if len(preyinstance.positions) == i:

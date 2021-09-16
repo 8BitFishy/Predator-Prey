@@ -44,6 +44,8 @@ def populateoutputfiles(actorlist):
 
             file_object.write(str(Actor.birth))
             file_object.write("\n")
+            file_object.write(str(Actor.death))
+            file_object.write("\n")
 
             for i in Actor.vectors:
 

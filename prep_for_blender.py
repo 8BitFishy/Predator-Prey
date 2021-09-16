@@ -1,6 +1,8 @@
 import os
+import animation_snapshot
 
 def backfill_vectors():
+    print("Backfilling vectors...")
     outputparams = {}
     dead = [99999, 99999, 99999]
 
@@ -17,6 +19,7 @@ def backfill_vectors():
     dir = "vectors"
     x = 0
     while x < plantcount+preycount+predatorcount:
+        print(f"{x} of {plantcount+predatorcount+preycount}")
         if x < plantcount:
             dir = 'plantvectors'
         else:
@@ -34,6 +37,8 @@ def backfill_vectors():
                         birth = 0
                         line = f.read().splitlines(True)
                         birth = int(line[0])
+                        death = int(line[1])
+                        del line[0]
                         del line[0]
                         for k in line:
                             k = k.rstrip("\n")
@@ -48,11 +53,11 @@ def backfill_vectors():
                         for i in vectors:
 
                             while t < birth:
-                                vectors.insert(0, dead)
+                                vectors.insert(2, dead)
                                 t += 1
                             while len(vectors) < duration:
                                 vectors.append(dead)
-
+                        f.write(str(f"{birth}\n{death}\n"))
                         for i in vectors:
                             for e in range(3):
                                 f.write(str(i[e]))
@@ -62,5 +67,5 @@ def backfill_vectors():
 
 if __name__ == '__main__':
     backfill_vectors()
-
+    animation_snapshot.generate_animation_files()
 

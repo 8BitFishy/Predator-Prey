@@ -64,7 +64,7 @@ def generate_actors(groundsize, parameters):
         fertility = parameters["predfertility"]
         index = i
 
-        if i > preycount:
+        if i >= preycount:
             walkspeed = random.randint(parameters["predatorwalkspeed"] - 1, parameters["predatorwalkspeed"] + 1)
             viewdistance = random.randint(parameters["predatorviewdistance"] - 1, parameters["predatorviewdistance"] + 1)
             longevity = random.randint(parameters["predlongevity"] - 1, parameters["predlongevity"] + 1)
