@@ -14,6 +14,8 @@ import math
 import random
 import Generate_CSV
 import Actors_In_View
+import prep_for_blender
+import animation_snapshot
 
 
 parameters = {}
@@ -43,7 +45,9 @@ if __name__ == '__main__':
 
 
     #Read parameter file and add to parameters dict
-    parameters = read_parameters.read_parameters()
+    params = read_parameters.read_parameters()
+    parameters = params[0]
+    inputparams = params[1]
     groundsize = parameters["groundsize"]
     predatorcount = parameters["predatorcount"]
     preycount = parameters["preycount"]
@@ -401,22 +405,35 @@ if __name__ == '__main__':
 
     #generate exit files
     print(f"\nGenerating Parameter File")
-    outputmanager.print_inputs(parameters)
+    outputmanager.print_inputs(inputparams)
     print(f"Generating log")
     outputmanager.print_log(log)
+
     print(f"Generating vectors")
     outputmanager.populateoutputfiles(livingactors)
     print(f"Generating actor characteristics files")
     outputmanager.output_characteristics(livingactors)
     print(f"Generating animation parameters")
     outputmanager.print_outputparams(predatortotal, preytotal, plantstotal, t)
-    print(f"Generating stats files")
+    print(f"Generating stats files\n")
+    Generate_CSV.Generate_CSV()
+
+
     print(f"\n{predsleft} of {predatortotal} predators left alive")
     print(f"{preyleft} of {preytotal} prey left alive")
     print(f"{plantsleft} of {plantstotal} plants left alive")
-    print(f"{t} rounds played, {t*5} frames in animation\n")
-    Generate_CSV.Generate_CSV()
+    print(f"{t} rounds played\n")
 
+    print("Generating learning data")
+    outputmanager.generate_learning_data(t, inputparams)
+'''
+    generate_animation = input("Would you like to generate an animation? y or n" )
+    if generate_animation == 'y':
+        frames = animation_snapshot.snapshot_range()
+        prep_for_blender.backfill_vectors()
+        animation_snapshot.generate_animation_files(frames)
+
+'''
 
 
 

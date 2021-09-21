@@ -17,8 +17,7 @@ def snapshot_range():
     return frames
 
 
-def generate_animation_files():
-    frames = snapshot_range()
+def generate_animation_files(frames):
     newpath = 'animation_data'
 
     if not os.path.exists(newpath):
@@ -64,7 +63,6 @@ def generate_animation_files():
                             else:
                                 plants += 1
 
-                            print(f"{actor_type} {actor_number}, born {birth}, died {death} is alive in this period")
                             with open(f"{newpath}//{file}", "w") as g:
                                 for i in range(len(line)):
                                     if i == 0 or i == 1:
@@ -81,7 +79,7 @@ def generate_animation_files():
                                         g.write("\n")
 
                         else:
-                            print(f"{actor_type} {actor_number}, born {birth}, died {death} is not alive in this period")
+                            continue
 
     print(f"{predators} predators, {prey} prey & {plants} plants alive in this period")
 
@@ -95,5 +93,5 @@ def generate_animation_files():
 
 
 if __name__ == '__main__':
-
-    generate_animation_files()
+    frames = snapshot_range()
+    generate_animation_files(frames)

@@ -22,7 +22,10 @@ class Actors:
 
 def Generate_CSV():
     outputparams = {}
-    with open("Outputparams.txt") as f:
+    newpath = 'log'
+    filename = "Outputparams.txt"
+
+    with open(f'{newpath}\\{filename}') as f:
         for line in f:
             name, value = line.split("=")
             name = name.rstrip(" ")
@@ -213,7 +216,7 @@ def Generate_CSV():
         f.write(str((f"\nOldest predator = {predlongestlifeactor} at {predoldest} rounds")))
         f.write(str((f"\nOldest prey = {preylongestlifeactor} at {preyoldest} rounds")))
         f.write(str((f"\nPredator with most longevity = {predmostlongevityactor} at {predlongevist} rounds")))
-        f.write(str((f"\nPrey with most longevity = {preymostlongevityactor} at {preylongevist} rounds\n")))
+        f.write(str((f"\nPrey with most longevity = {preymostlongevityactor} at {preylongevist} rounds\n\n")))
         f.write(str((f"\nPredators born = {predsborn}")))
         f.write(str((f"\nPredators died of starvation = {predstarved}")))
         f.write(str((f"\nPredators died of old age = {predold}")))
@@ -253,6 +256,8 @@ def Generate_CSV():
             av_preylifespan = 0
             av_predage = 0
             av_preyage = 0
+#            predstarved = predold = 0
+#            preyeaten = preyold = preystarved = 0
 
             for Actor in actorlist:
 
@@ -348,10 +353,11 @@ def Generate_CSV():
                 av_preyviewdistance = av_preyviewdistance / preypop
                 av_preywalkspeed = av_preywalkspeed / preypop
                 av_preyage = av_preyage / preypop
-
             row = [i, predpop, preypop, plantpop,  predstarved, predold, preyeaten, preystarved, preyold, av_predlifespan, av_preylifespan, av_predage, av_preyage, av_predwalkspeed, av_preywalkspeed, av_predviewdistance, av_preyviewdistance]
 
             csvwriter.writerow(row)
+
+    return
 
 if __name__ == '__main__':
     Generate_CSV()

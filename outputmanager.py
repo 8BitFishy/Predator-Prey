@@ -1,4 +1,6 @@
 import os
+import csv
+
 
 def print_log(log):
 
@@ -100,16 +102,49 @@ def output_characteristics(actorlist):
     return()
 
 
+def generate_learning_data(t, parameters):
+
+    newpath = 'learning_data'
+
+    if not os.path.exists(newpath):
+        os.makedirs(newpath)
+    filename = "learning_data.csv"
+    #fields = ['Rounds']
+    row = [t]
+
+    for x in parameters:
+        #fields.append(x)
+        row.append(parameters[x])
+
+
+    # writing to csv file
+    with open(f"{newpath}//{filename}", 'a', newline="") as csvfile:
+
+        # creating a csv writer object
+        csvwriter = csv.writer(csvfile)
+
+        # writing the fields
+        #csvwriter.writerow(fields)
+
+
+        csvwriter.writerow(row)
+    return
+
 
 def print_outputparams(predatortotal, preytotal, plantstotal, t):
 
-    filename = "Outputparams.txt"
-    if not os.path.exists(filename):
-        os.makedirs(filename)
 
-    f = open(filename, "w")
-    f.write(str(f"Duration = {t}"))
-    f.write(str(f"\ntotalpreds = {predatortotal}"))
-    f.write(str(f"\ntotalprey = {preytotal}"))
-    f.write(str(f"\ntotalplants = {plantstotal}"))
-    f.close()
+    newpath = 'log'
+
+    if not os.path.exists(newpath):
+        os.makedirs(newpath)
+    filename = "Outputparams.txt"
+
+    with open(f'{newpath}\\{filename}', 'w')as f:
+        f.write(str(f"Duration = {t}"))
+        f.write(str(f"\ntotalpreds = {predatortotal}"))
+        f.write(str(f"\ntotalprey = {preytotal}"))
+        f.write(str(f"\ntotalplants = {plantstotal}"))
+        f.close()
+
+    return

@@ -5,8 +5,10 @@ def backfill_vectors():
     print("Backfilling vectors...")
     outputparams = {}
     dead = [99999, 99999, 99999]
+    newpath = 'log'
+    filename = "Outputparams.txt"
 
-    with open("Outputparams.txt") as f:
+    with open(f'{newpath}\\{filename}')  as f:
         for line in f:
             name, value = line.split("=")
             name = name.rstrip(" ")
@@ -19,12 +21,11 @@ def backfill_vectors():
     dir = "vectors"
     x = 0
     while x < plantcount+preycount+predatorcount:
-        print(f"{x} of {plantcount+predatorcount+preycount}")
         if x < plantcount:
             dir = 'plantvectors'
         else:
-            dir = 'vectors' \
-                      ''
+            dir = 'vectors'
+
         for files in os.walk(dir):
             filelist = list(files[2])
             for file in filelist:
@@ -67,5 +68,6 @@ def backfill_vectors():
 
 if __name__ == '__main__':
     backfill_vectors()
-    animation_snapshot.generate_animation_files()
+    frames = animation_snapshot.snapshot_range()
+    animation_snapshot.generate_animation_files(frames)
 
