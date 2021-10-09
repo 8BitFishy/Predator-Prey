@@ -13,6 +13,8 @@ def print_log(log):
         file_object.write(str(log))
         file_object.write("\n")
 
+    return
+
 def print_inputs(parameters):
 
     newpath = 'log'
@@ -25,6 +27,7 @@ def print_inputs(parameters):
             file_object.write(str(f"{x} = {parameters[x]}"))
             file_object.write("\n")
 
+    return
 
 
 def populateoutputfiles(actorlist):
@@ -42,6 +45,7 @@ def populateoutputfiles(actorlist):
 
         actoroutput = ('{}\\{} {} vectors.txt'.format(newpath, Actor.role, Actor.actorcount))
 
+
         with open(actoroutput, 'w')as file_object:
 
             file_object.write(str(Actor.birth))
@@ -56,6 +60,11 @@ def populateoutputfiles(actorlist):
                     file_object.write(",")
                 file_object.write(str(Actor.size / 2))
                 file_object.write("\n")
+
+
+    return
+
+
 
 
 def output_characteristics(actorlist):

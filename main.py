@@ -86,13 +86,20 @@ if __name__ == '__main__':
             livingactors[i].index = i
 
         #print output files for actors and offload dead actors
-        if t%parameters["offload"] == 0:
-            deadactors.extend(livingactors)
+        if t%parameters["offload"] == 0 and t != 0:
+            #deadactors.extend(livingactors)
             outputmanager.populateoutputfiles(deadactors)
             outputmanager.output_characteristics(deadactors)
             outputmanager.print_outputparams(predatortotal, preytotal, plantstotal, t)
             outputmanager.print_log(log)
             deadactors.clear()
+
+            for Actor in livingactors:
+                #TODO output living actor vectors
+                last = Actor.vectors[-1]
+                Actor.vectors.clear()
+                Actor.vectors.append(last)
+
 
 
         #log updates

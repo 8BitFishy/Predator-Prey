@@ -1,12 +1,12 @@
 groundsize = 5000
 
-predatorcount = 30
+predatorcount = 200
 predatorlifespan = 800
 predlongevity = 1000
 predmatingpenalty = 700
 predeatinggain = 650
 
-preycount = 100
+preycount = 500
 preylifespan = 700
 preylongevity = 900
 preymatingpenalty = 100
