@@ -31,7 +31,6 @@ def print_inputs(parameters):
 
 
 def populateoutputfiles(actorlist):
-    l = printed = 0
 
     for Actor in actorlist:
 
@@ -47,6 +46,7 @@ def populateoutputfiles(actorlist):
 
 
         with open(actoroutput, 'w')as file_object:
+
 
             file_object.write(str(Actor.birth))
             file_object.write("\n")
@@ -70,7 +70,6 @@ def populateoutputfiles(actorlist):
 def output_characteristics(actorlist):
 
     newpath = 'actors'
-    i = printed = 0
     for Actor in actorlist:
 
         newpath = 'actors'

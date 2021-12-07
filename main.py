@@ -36,7 +36,7 @@ deadactors = []
 #_________________________Start of main simulation___________________________
 
 if __name__ == '__main__':
-
+    print()
     clearvectorfiles.clearvectorfiles()
     os.system('cls' if os.name == 'nt' else 'clear')
     print("\n\n-----------------------RUN BEGIN------------------------\n")
@@ -96,6 +96,7 @@ if __name__ == '__main__':
 
             for Actor in livingactors:
                 #TODO output living actor vectors
+                #outputmanager.populateoutputfiles(livingactors)
                 last = Actor.vectors[-1]
                 Actor.vectors.clear()
                 Actor.vectors.append(last)
@@ -182,7 +183,6 @@ if __name__ == '__main__':
                 #otherwise if actor is fine to move, generate movement vectors
                 else:
                     actorsinview = []
-                    actorsinview.append(Actor)
                     actorsinview = Actors_In_View.Actors_In_View(actorsinview, livingactors, Actor.position, Actor.viewdistance, Actor.role)
 
                     for i in range(len(actorsinview)):

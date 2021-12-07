@@ -12,4 +12,4 @@ preylongevity = 900
 preymatingpenalty = 100
 preyeatinggain = 500
 
-plantcount = 1750
+plantcount = 2500
